@@ -1,0 +1,31 @@
+{
+  "name": "Carte sans mot-clé de bande",
+  "driverDesc": "Legacy Wireless G Adapter",
+  "keyPath": "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e972-e325-11ce-bfc1-08002be10318}\\0009",
+  "ifType": 71,
+  "params": [
+    {
+      "keyword": "RoamingAggressiveness",
+      "paramDesc": "Roaming aggressiveness",
+      "default": "3",
+      "current": "3",
+      "isEnum": true,
+      "choices": [
+        { "code": "1", "label": "Low" },
+        { "code": "3", "label": "Medium" },
+        { "code": "5", "label": "High" }
+      ]
+    },
+    {
+      "keyword": "TxPowerLevel",
+      "paramDesc": "Transmit power",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "Max" },
+        { "code": "1", "label": "Min" }
+      ]
+    }
+  ]
+}

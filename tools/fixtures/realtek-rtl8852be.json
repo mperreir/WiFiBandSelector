@@ -1,0 +1,46 @@
+{
+  "name": "Realtek RTL8852BE (à confirmer sur les ProBook)",
+  "driverDesc": "Realtek RTL8852BE WiFi 6 802.11ax PCIe Adapter",
+  "keyPath": "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e972-e325-11ce-bfc1-08002be10318}\\0004",
+  "ifType": 71,
+  "params": [
+    {
+      "keyword": "PreferredBand",
+      "paramDesc": "Preferred Band",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "1. No preference" },
+        { "code": "1", "label": "2. Prefer 2.4GHz" },
+        { "code": "2", "label": "3. Prefer 5GHz" },
+        { "code": "3", "label": "4. Prefer 6GHz" }
+      ]
+    },
+    {
+      "keyword": "RoamingAggressiveness",
+      "paramDesc": "Roaming Aggressiveness",
+      "default": "3",
+      "current": "3",
+      "isEnum": true,
+      "choices": [
+        { "code": "1", "label": "1. Lowest" },
+        { "code": "2", "label": "2. Low" },
+        { "code": "3", "label": "3. Medium" },
+        { "code": "4", "label": "4. High" },
+        { "code": "5", "label": "5. Highest" }
+      ]
+    },
+    {
+      "keyword": "WirelessMode",
+      "paramDesc": "Wireless Mode",
+      "default": "13",
+      "current": "13",
+      "isEnum": true,
+      "choices": [
+        { "code": "1", "label": "802.11b/g" },
+        { "code": "13", "label": "802.11ax" }
+      ]
+    }
+  ]
+}

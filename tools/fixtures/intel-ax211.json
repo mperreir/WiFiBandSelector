@@ -1,0 +1,45 @@
+{
+  "name": "Intel AX211",
+  "driverDesc": "Intel(R) Wi-Fi 6E AX211 160MHz",
+  "keyPath": "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e972-e325-11ce-bfc1-08002be10318}\\0003",
+  "ifType": 71,
+  "params": [
+    {
+      "keyword": "RoamingPreferredBandType",
+      "paramDesc": "Preferred Band",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "No preference" },
+        { "code": "1", "label": "Prefer 2.4GHz" },
+        { "code": "2", "label": "Prefer 5GHz" }
+      ]
+    },
+    {
+      "keyword": "RoamingAggressiveness",
+      "paramDesc": "Roaming aggressiveness",
+      "default": "3",
+      "current": "3",
+      "isEnum": true,
+      "choices": [
+        { "code": "1", "label": "Lowest" },
+        { "code": "2", "label": "Low" },
+        { "code": "3", "label": "Medium" },
+        { "code": "4", "label": "High" },
+        { "code": "5", "label": "Highest" }
+      ]
+    },
+    {
+      "keyword": "WirelessMode",
+      "paramDesc": "Wireless mode",
+      "default": "13",
+      "current": "13",
+      "isEnum": true,
+      "choices": [
+        { "code": "9", "label": "802.11a/g (54 Mbps)" },
+        { "code": "13", "label": "802.11ax (WiFi 6)" }
+      ]
+    }
+  ]
+}

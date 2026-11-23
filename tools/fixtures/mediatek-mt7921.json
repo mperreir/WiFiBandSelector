@@ -1,0 +1,93 @@
+{
+  "name": "MediaTek MT7921",
+  "driverDesc": "MediaTek Wi-Fi 6 MT7921 Wireless LAN Card",
+  "keyPath": "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e972-e325-11ce-bfc1-08002be10318}\\0002",
+  "ifType": 71,
+  "params": [
+    {
+      "keyword": "PreferredBand",
+      "paramDesc": "Bande privilégiée",
+      "default": "2",
+      "current": "2",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "1. Aucune préférence" },
+        { "code": "1", "label": "2. Préférer bande 2,4 GHz" },
+        { "code": "2", "label": "3. Préférer la bande 5 GHz" },
+        { "code": "3", "label": "4. Préférer la bande 6 GHz" }
+      ]
+    },
+    {
+      "keyword": "BandSelection",
+      "paramDesc": "Band Selection",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "1. All Band" },
+        { "code": "1", "label": "2. 2.4G Only" },
+        { "code": "2", "label": "3. 5G Only" }
+      ]
+    },
+    {
+      "keyword": "RoamIndicateTh",
+      "paramDesc": "Agressivité de l'itinérance",
+      "default": "3",
+      "current": "2",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "1. Désactivé(e)" },
+        { "code": "1", "label": "2. Min." },
+        { "code": "2", "label": "3. Faible" },
+        { "code": "3", "label": "4. Moyenne" },
+        { "code": "4", "label": "5. Élevée" },
+        { "code": "5", "label": "6. Max." }
+      ]
+    },
+    {
+      "keyword": "WfdGOOperatingChannel",
+      "paramDesc": "Miracast prefer band",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "Auto" },
+        { "code": "11", "label": "2.4G" },
+        { "code": "36", "label": "5G" }
+      ]
+    },
+    {
+      "keyword": "BWSelection5G",
+      "paramDesc": "5GHz channel bandwidth",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "1. Auto" },
+        { "code": "1", "label": "2. 20MHz only" }
+      ]
+    },
+    {
+      "keyword": "AMSDURx",
+      "paramDesc": "AMSDU Rx",
+      "default": "1",
+      "current": "1",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "Désactivé(e)" },
+        { "code": "1", "label": "Activé(e)" }
+      ]
+    },
+    {
+      "keyword": "CurrPhyMode",
+      "paramDesc": "802.11ax/ac/n/abg",
+      "default": "0",
+      "current": "0",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "1. 802.11ax" },
+        { "code": "1", "label": "2. 802.11ac" }
+      ]
+    }
+  ]
+}

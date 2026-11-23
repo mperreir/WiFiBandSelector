@@ -1,0 +1,29 @@
+{
+  "name": "Carte exotique — classement par libellés",
+  "driverDesc": "Acme Dual Band Wireless Adapter",
+  "keyPath": "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e972-e325-11ce-bfc1-08002be10318}\\0007",
+  "ifType": 71,
+  "params": [
+    {
+      "keyword": "RadioMode",
+      "paramDesc": "Radio mode",
+      "default": "auto",
+      "current": "five",
+      "isEnum": true,
+      "choices": [
+        { "code": "auto", "label": "Automatic" },
+        { "code": "two", "label": "Prefer 2.4 GHz" },
+        { "code": "five", "label": "Prefer 5 GHz" },
+        { "code": "six", "label": "Prefer 6 GHz" }
+      ]
+    },
+    {
+      "keyword": "MaxTxPower",
+      "paramDesc": "Transmit power",
+      "default": "100",
+      "current": "100",
+      "isEnum": false,
+      "choices": []
+    }
+  ]
+}
