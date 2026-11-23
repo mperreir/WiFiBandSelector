@@ -98,8 +98,9 @@ si absents, puis `makensis`. Sortie : `dist\WiFiBandSelector-Setup-<version>.exe
 
 - `tools\fixtures\*.json` : relevés de registre rejoués par les tests (MediaTek, Intel, Realtek,
   carte exotique, carte sans bande). La fixture Realtek est à confirmer avec l'INF réel.
-- `installer\task.xml` : modèle de tâche planifiée, le chemin d'installation est substitué par
-  l'installateur.
+- `installer\setup.nsi` : génère le XML de la tâche planifiée en UTF-16/BOM avec le chemin réel
+  d'installation. Il est écrit ligne par ligne : une variable NSIS plafonne à 1024 caractères et
+  tronquerait le document.
 - `C:\Users\nous\.opencode\plan\wifi-band-selector.md` : plan de travail (hors dépôt).
 
 ## Licence

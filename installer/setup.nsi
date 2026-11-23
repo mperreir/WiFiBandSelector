@@ -24,8 +24,6 @@ SetCompressor /SOLID lzma
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
 !include "LogicLib.nsh"
-!include "StrFunc.nsh"
-${Using:StrFunc} StrRep
 
 !define MUI_ABORTWARNING
 !define MUI_ICON "..\assets\app.ico"
@@ -127,36 +125,64 @@ Function InstallRuntime
 FunctionEnd
 
 ; ---------------------------------------------------------------------------
-; La tâche doit contenir le chemin réel choisi dans l'assistant. Le modèle est
-; relu ligne par ligne, réécrit en UTF-16 avec BOM (format attendu par schtasks).
+; Écriture directe du XML en UTF-16 avec BOM, ligne par ligne. Ne pas concaténer
+; le document dans une variable NSIS : elle plafonne à 1024 caractères et le
+; fichier serait tronqué (erreur « code XML mal formé » de schtasks).
 ; ---------------------------------------------------------------------------
 Function WriteTaskXml
   InitPluginsDir
-  ClearErrors
-  FileOpen $3 "$INSTDIR\task.xml" r
-  IfErrors TaskReadFailed
-  StrCpy $4 ""
-TaskReadLoop:
-  ClearErrors
-  FileRead $3 $5
-  IfErrors TaskReadDone
-  StrCpy $4 "$4$5"
-  Goto TaskReadLoop
-TaskReadDone:
-  FileClose $3
-  ${StrRep} $6 $4 "__INSTALLDIR__" "$INSTDIR"
-
-  ClearErrors
-  FileOpen $3 "$PLUGINSDIR\WiFiBandSelector-task.xml" w
-  IfErrors TaskWriteFailed
-  FileWriteUTF16LE /BOM $3 $6
-  FileClose $3
   StrCpy $taskXmlPath "$PLUGINSDIR\WiFiBandSelector-task.xml"
+  ClearErrors
+  FileOpen $3 "$taskXmlPath" w
+  IfErrors TaskWriteFailed
+
+  FileWriteUTF16LE /BOM $3 '<?xml version="1.0" encoding="UTF-16"?>$\r$\n'
+  FileWriteUTF16LE $3 '<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">$\r$\n'
+  FileWriteUTF16LE $3 '  <RegistrationInfo>$\r$\n'
+  FileWriteUTF16LE $3 '    <Author>${APP_PUBLISHER}</Author>$\r$\n'
+  FileWriteUTF16LE $3 '    <Description>WiFiBandSelector - demarrage avec la session de chaque utilisateur</Description>$\r$\n'
+  FileWriteUTF16LE $3 '  </RegistrationInfo>$\r$\n'
+  FileWriteUTF16LE $3 '  <Triggers>$\r$\n'
+  FileWriteUTF16LE $3 '    <LogonTrigger>$\r$\n'
+  FileWriteUTF16LE $3 '      <Enabled>true</Enabled>$\r$\n'
+  FileWriteUTF16LE $3 '    </LogonTrigger>$\r$\n'
+  FileWriteUTF16LE $3 '  </Triggers>$\r$\n'
+  FileWriteUTF16LE $3 '  <Principals>$\r$\n'
+  FileWriteUTF16LE $3 '    <Principal id="Author">$\r$\n'
+  FileWriteUTF16LE $3 '      <GroupId>S-1-5-32-545</GroupId>$\r$\n'
+  FileWriteUTF16LE $3 '      <RunLevel>HighestAvailable</RunLevel>$\r$\n'
+  FileWriteUTF16LE $3 '    </Principal>$\r$\n'
+  FileWriteUTF16LE $3 '  </Principals>$\r$\n'
+  FileWriteUTF16LE $3 '  <Settings>$\r$\n'
+  FileWriteUTF16LE $3 '    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>$\r$\n'
+  FileWriteUTF16LE $3 '    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>$\r$\n'
+  FileWriteUTF16LE $3 '    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>$\r$\n'
+  FileWriteUTF16LE $3 '    <AllowHardTerminate>true</AllowHardTerminate>$\r$\n'
+  FileWriteUTF16LE $3 '    <StartWhenAvailable>true</StartWhenAvailable>$\r$\n'
+  FileWriteUTF16LE $3 '    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>$\r$\n'
+  FileWriteUTF16LE $3 '    <IdleSettings>$\r$\n'
+  FileWriteUTF16LE $3 '      <StopOnIdleEnd>false</StopOnIdleEnd>$\r$\n'
+  FileWriteUTF16LE $3 '      <RestartOnIdle>false</RestartOnIdle>$\r$\n'
+  FileWriteUTF16LE $3 '    </IdleSettings>$\r$\n'
+  FileWriteUTF16LE $3 '    <AllowStartOnDemand>true</AllowStartOnDemand>$\r$\n'
+  FileWriteUTF16LE $3 '    <Enabled>true</Enabled>$\r$\n'
+  FileWriteUTF16LE $3 '    <Hidden>false</Hidden>$\r$\n'
+  FileWriteUTF16LE $3 '    <RunOnlyIfIdle>false</RunOnlyIfIdle>$\r$\n'
+  FileWriteUTF16LE $3 '    <WakeToRun>false</WakeToRun>$\r$\n'
+  FileWriteUTF16LE $3 '    <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>$\r$\n'
+  FileWriteUTF16LE $3 '    <Priority>7</Priority>$\r$\n'
+  FileWriteUTF16LE $3 '  </Settings>$\r$\n'
+  FileWriteUTF16LE $3 '  <Actions Context="Author">$\r$\n'
+  FileWriteUTF16LE $3 '    <Exec>$\r$\n'
+  FileWriteUTF16LE $3 '      <Command>$INSTDIR\${APP_EXE}</Command>$\r$\n'
+  FileWriteUTF16LE $3 '    </Exec>$\r$\n'
+  FileWriteUTF16LE $3 '  </Actions>$\r$\n'
+  FileWriteUTF16LE $3 '</Task>$\r$\n'
+  FileClose $3
   Return
 
-TaskReadFailed:
 TaskWriteFailed:
-  MessageBox MB_ICONSTOP|MB_OK "Impossible de préparer la tâche planifiée (modèle illisible)."
+  MessageBox MB_ICONSTOP|MB_OK "Impossible de préparer la tâche planifiée."
   Abort
 FunctionEnd
 
@@ -172,7 +198,6 @@ Section "Installation de ${APP_NAME}" SecMain
   CreateDirectory "$INSTDIR"
   SetOutPath "$INSTDIR"
   File "..\publish\${APP_EXE}"
-  File "..\installer\task.xml"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   WriteRegStr HKLM "${UNINSTALL_KEY}" "DisplayName" "${APP_NAME}"
@@ -211,7 +236,6 @@ Section "Uninstall"
   Pop $1
 
   Delete "$INSTDIR\${APP_EXE}"
-  Delete "$INSTDIR\task.xml"
   Delete "$INSTDIR\Uninstall.exe"
   RMDir "$INSTDIR"
   DeleteRegKey HKLM "${UNINSTALL_KEY}"
