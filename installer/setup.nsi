@@ -197,6 +197,13 @@ Section "Installation de ${APP_NAME}" SecMain
 
   CreateDirectory "$INSTDIR"
   SetOutPath "$INSTDIR"
+
+  ; Une version precedente peut etre en cours : son exe est verrouille.
+  DetailPrint "Fermeture de l'instance en cours..."
+  nsExec::ExecToStack 'taskkill /IM ${APP_EXE} /F'
+  Pop $0
+  Pop $1
+
   File "..\publish\${APP_EXE}"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 

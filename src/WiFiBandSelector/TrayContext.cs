@@ -49,7 +49,20 @@ internal sealed class TrayContext : ApplicationContext
         if (e.Button != MouseButtons.Left)
             return;
 
-        _menu.Show(Cursor.Position);
+        // ContextMenuStrip.Show() crée un popup non activé : un clic à côté ne le
+        // ferme pas. Le clic droit passe par NotifyIcon.ShowContextMenu(), qui
+        // active correctement le menu ; on utilise le même chemin ici.
+        var show = typeof(NotifyIcon).GetMethod(
+            "ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        if (show is null)
+        {
+            // Repli si ce membre interne change dans une version future.
+            _menu.Show(Cursor.Position);
+            return;
+        }
+
+        show.Invoke(_tray, null);
     }
 
     /// <summary>Découverte de la carte et rafraîchissement des valeurs.</summary>
