@@ -1,90 +1,99 @@
 # WiFiBandSelector
 
- petit utilitaire Windows (zone de notification) pour choisir la bande Wi-Fi d'un portable en deux
-clics : **2,4 GHz**, **5 GHz**, **6 GHz** quand le pilote les expose. Il écrit uniquement les
-réglages avancés que le pilote déclare déjà dans le registre ; il ne modifie ni pilote ni profil
-Wi-Fi, et n'envoie aucune donnée.
+A small Windows notification-area utility that switches a laptop's Wi-Fi band in two clicks:
+**2.4 GHz**, **5 GHz** or **6 GHz** when the driver exposes them. It only writes the advanced
+settings the driver already declares in the registry; it changes no driver or Wi-Fi profile and
+sends no data anywhere.
 
-> Public cible : deux HP ProBook 440 G9 utilisés par des étudiants. Développé et vérifié sur une
-> carte MediaTek MT7921 ; le classement est générique et fonctionne avec d'autres pilotes, mais les
-> ProBook (Realtek) restent à valider avec le rapport de diagnostic.
+> Target devices: two HP ProBook 440 G9 laptops used by students. Developed and verified on a
+> MediaTek MT7921 adapter; classification is generic and works with other drivers, but the
+> ProBooks (Realtek) still need validation with a diagnostic report.
 
-## Installation (pour les étudiants)
+## Language
 
-1. Télécharger `WiFiBandSelector-Setup-0.1.0.exe` depuis la page
-   [Releases](https://github.com/mperreir/WiFiBandSelector/releases).
-2. Si Windows affiche « Marque du web », cliquer sur **Informations complémentaires** puis
-   **Exécuter quand même** (le programme n'est pas signé).
-3. Exécuter le fichier, répondre **Oui** à la demande UAC, puis **Terminer**.
-4. Le .NET 8 Desktop Runtime est téléchargé et installé automatiquement si nécessaire
-   (connexion requise). Sinon : `WiFiBandSelector-Setup-0.1.0.exe /RUNTIME=C:\chemin\windowsdesktop-runtime-win-x64.exe`.
-5. Une icône Wi-Fi apparaît près de l'horloge ; l'application se lance à chaque ouverture de
-   session, pour tous les comptes.
+The application uses the Windows default UI language: **French** and **English** are supported.
+Any other UI culture falls back to English. This applies to the tray menu, notifications,
+messages, logs and diagnostic reports.
 
-## Utilisation
+> The NSIS installer assistant itself is still French; only the installed application is localized.
 
-Cliquer sur l'icône (clic gauche ou droit) ouvre le menu :
+## Installation (for students)
 
-- en-tête : carte sélectionnée, réglage courant et bande réellement associée ;
-- **Bande préférée** : préférence souple, les deux bandes restent autorisées ;
-- **Verrouiller une bande** : réglage strict, disponible seulement si le pilote l'expose ;
-- **Itinérance** : agressivité, avec retour à la valeur par défaut du pilote ;
-- **Reconnecter maintenant**, **Démarrage avec Windows**, **Annuler la dernière modification** ;
-- **Diagnostic…**, **Journal…**, **À propos**, **Quitter**.
+1. Download `WiFiBandSelector-Setup-0.2.0.exe` from the
+   [Releases](https://github.com/mperreir/WiFiBandSelector/releases) page.
+2. If Windows shows "Windows protected your PC", click **More info** and then **Run anyway**
+   (the executable is not code-signed).
+3. Run the file, answer **Yes** to the UAC prompt and then **Finish**.
+4. The .NET 8 Desktop Runtime is downloaded and installed automatically if needed (an Internet
+   connection is required). Otherwise use
+   `WiFiBandSelector-Setup-0.2.0.exe /RUNTIME=C:\path\to\windowsdesktop-runtime-win-x64.exe`.
+5. A Wi-Fi icon appears near the clock; the application starts at every logon, for all accounts.
 
-Après un verrou, l'application vérifie que la connexion revient dans les 30 secondes ; sinon elle
-restaure la valeur précédente et affiche un avertissement. Elle refuse aussi un verrou sur une
-bande absente d'un scan non vide.
+## Usage
 
-Si l'icône indique « Relancer en administrateur », le menu est en lecture seule : les écritures dans
-le registre exigent les droits élevés fournis par la tâche planifiée.
+Click the icon (left or right click) to open the menu:
 
-## Diagnostic
+- header: selected adapter, current setting and the band actually associated;
+- **Preferred band**: soft preference, both bands remain allowed;
+- **Lock a band**: strict setting, offered only when the driver exposes it;
+- **Roaming**: aggressiveness, with a reset to the driver default;
+- **Reconnect now**, **Start with Windows**, **Undo last change**;
+- **Diagnostic...**, **Log...**, **About**, **Exit**.
 
-Menu **Diagnostic…** : un rapport est écrit dans
-`%LOCALAPPDATA%\WiFiBandSelector\`, copié dans le presse-papiers et ouvert dans l'Explorateur.
-Envoyer ce rapport (et, si besoin, `%LOCALAPPDATA%\WiFiBandSelector\log.txt`) au développeur.
+In French these entries are **Bande préférée**, **Verrouiller une bande**, **Itinérance**,
+**Reconnecter maintenant**, **Démarrage avec Windows**, **Annuler la dernière modification**,
+**Diagnostic…**, **Journal…**, **À propos** and **Quitter**.
 
-Pour un test sans interface :
+After a lock, the application checks that the connection comes back within 30 seconds; otherwise
+it restores the previous value and shows a warning. It also refuses to lock a band that is absent
+from a non-empty network scan.
+
+If the icon says "Restart as administrator" ("Relancer en administrateur"), the menu is read-only:
+registry writes require the elevated rights provided by the scheduled task.
+
+## Diagnostics
+
+Menu **Diagnostic...** ("Diagnostic…"): a report is written to
+`%LOCALAPPDATA%\WiFiBandSelector\`, copied to the clipboard and opened in Explorer. Send that
+report (and, if needed, `%LOCALAPPDATA%\WiFiBandSelector\log.txt`) to the developer.
+
+For a headless report:
 
 ```powershell
-& "C:\Program Files\WiFiBandSelector\WiFiBandSelector.exe" /report "$env:TEMP\rapport.txt"
+& "C:\Program Files\WiFiBandSelector\WiFiBandSelector.exe" /report "$env:TEMP\report.txt"
 ```
 
-Le rapport indique la carte, les familles reconnues, la bande associée, toutes les valeurs `enum`
-du pilote et les motifs de classement. Une carte sans mot-clé de bande est signalée
-« non prise en charge » : c'est un résultat normal, pas un bug.
+The report lists the adapter, the recognized families, the associated band, all `enum` values of
+the driver and the classification notes. An adapter without a band keyword is reported as
+"unsupported": that is a normal result, not a bug.
 
-Pour un test d'écriture sans interface (réservé au support, nécessite les droits élevés) :
+For a headless write (support only, requires elevation):
 
 ```powershell
-& "C:\Program Files\WiFiBandSelector\WiFiBandSelector.exe" /set preference 1 "$env:TEMP\resultat.txt"
+& "C:\Program Files\WiFiBandSelector\WiFiBandSelector.exe" /set preference 1 "$env:TEMP\result.txt"
 ```
 
-La famille est `preference`, `lock` ou `roaming` ; le code est celui indiqué par le rapport.
-Le résultat (`Applied`, `Refused`…) est écrit dans le fichier ; code de sortie `0` si l'application
-a réussi, `1` sinon.
+The family is `preference`, `lock` or `roaming` (the v0.1 French aliases `préférence`, `verrou`
+and `itinérance` are still accepted); the code comes from the report. The result (`Applied`,
+`Refused`, ...) is written to the file; exit code `0` means success, `1` means failure.
 
-## Limites connues
+## Known limitations
 
-- **Realtek RTL8852BE** : le nom exact des mots-clés reste à confirmer sur les ProBook ; le rapport
-  permettra d'ajuster le classement si nécessaire.
-- **Intel AX211** : pas de verrou exploitable (`Wireless Mode` limiterait le débit) ; seule la
-  préférence est proposée.
-- **Itinérance** : sans plusieurs points d'accès sur le même SSID, ce réglage n'a aucun effet.
-- L'instabilité Wi-Fi des RTL8852BE est souvent liée au pilote ou à l'économie d'énergie ; ces
-  paramètres sont volontairement hors périmètre.
-- Une mise à jour de pilote peut réinitialiser les valeurs : l'application relit toujours le
-  registre au moment où le menu s'ouvre.
-- La préférence reste une préférence : le pilote peut choisir une autre bande si le signal est
-  faible.
-- L'application coupe brièvement la connexion lors d'un changement (quelques secondes en mode
-  verrou).
-- L'exécutable n'est pas signé : préférer une clé USB ou `Unblock-File` à un transfert OneDrive.
-- La tâche planifiée s'exécute avec les droits « les plus élevés disponibles » pour le groupe
-  *Utilisateurs* : un compte standard peut donc modifier un réglage réseau via l'application.
+- **Realtek RTL8852BE**: the exact keyword names still need confirmation on the ProBooks; the
+  report will show whether the classification needs adjusting.
+- **Intel AX211**: no usable lock (`Wireless Mode` would reduce throughput); only the preference
+  is offered.
+- **Roaming**: without several access points on the same SSID, this setting has no effect.
+- RTL8852BE Wi-Fi instability is often caused by the driver or power saving; those settings are
+  deliberately out of scope.
+- A driver update may reset values: the application re-reads the registry each time the menu opens.
+- A preference stays a preference: the driver may choose another band when the signal is weak.
+- The connection drops briefly when a change is applied (a few seconds in lock mode).
+- The executable is not signed: prefer a USB stick or `Unblock-File` over a OneDrive transfer.
+- The scheduled task runs with "highest available" rights for the *Users* group: a standard
+  account can therefore change a network setting through the application.
 
-## Développement
+## Development
 
 ```powershell
 git clone https://github.com/mperreir/WiFiBandSelector.git
@@ -93,16 +102,19 @@ dotnet test tests\WiFiBandSelector.Tests\WiFiBandSelector.Tests.csproj
 .\build.ps1
 ```
 
-`build.ps1` : tests, `dotnet publish` x64, téléchargement portable de NSIS 3.11 + plugin `inetc`
-si absents, puis `makensis`. Sortie : `dist\WiFiBandSelector-Setup-<version>.exe`.
+`build.ps1` runs the tests, publishes x64, downloads portable NSIS 3.11 and the `inetc` plugin if
+missing, then runs `makensis`. Output: `dist\WiFiBandSelector-Setup-<version>.exe`.
 
-- `tools\fixtures\*.json` : relevés de registre rejoués par les tests (MediaTek, Intel, Realtek,
-  carte exotique, carte sans bande). La fixture Realtek est à confirmer avec l'INF réel.
-- `installer\setup.nsi` : génère le XML de la tâche planifiée en UTF-16/BOM avec le chemin réel
-  d'installation. Il est écrit ligne par ligne : une variable NSIS plafonne à 1024 caractères et
-  tronquerait le document.
-- `C:\Users\nous\.opencode\plan\wifi-band-selector.md` : plan de travail (hors dépôt).
+- `src\WiFiBandSelector\Resources\Strings.resx` (English, neutral) and `Strings.fr.resx` (French)
+  hold all user-facing strings. Add the same key to both files, then reference it through the
+  generated `Strings` class; use `FormatWith(...)` for templates with `{0}` placeholders.
+- `tools\fixtures\*.json`: registry snapshots replayed by the tests (MediaTek, Intel, Realtek,
+  exotic adapter, adapter without bands). The Realtek fixture is still to be confirmed with the
+  real INF.
+- `installer\setup.nsi`: writes the scheduled-task XML in UTF-16 with BOM using the real install
+  path, line by line — an NSIS variable is limited to 1024 characters and would truncate it.
+- `C:\Users\nous\.opencode\plan\wifi-band-selector.md`: working plan (outside the repository).
 
-## Licence
+## License
 
-MIT — 2026 Matthieu Perreira Da Silva.
+MIT - 2026 Matthieu Perreira Da Silva.

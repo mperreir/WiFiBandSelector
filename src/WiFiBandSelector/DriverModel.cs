@@ -1,21 +1,22 @@
 using System.Text.RegularExpressions;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
-/// <summary>Famille de réglage exposée par un pilote NDIS.</summary>
+/// <summary>Setting family exposed by an NDIS driver.</summary>
 public enum SettingFamily
 {
-    /// <summary>Préférence souple : les deux bandes restent permises.</summary>
+    /// <summary>Soft preference: both bands remain allowed.</summary>
     Preference,
 
-    /// <summary>Verrou dur : une seule bande est permise.</summary>
+    /// <summary>Hard lock: only one band is allowed.</summary>
     Lock,
 
-    /// <summary>Agressivité d'itinérance (seuil de bascule entre points d'accès).</summary>
+    /// <summary>Roaming aggressiveness (handover threshold between access points).</summary>
     Roaming,
 }
 
-/// <summary>Bande radio, telle qu'on sait la déduire d'un libellé de pilote.</summary>
+/// <summary>Radio band, as inferred from a driver label.</summary>
 public enum Band
 {
     Band24,
@@ -27,13 +28,13 @@ public static class BandInfo
 {
     public static string Describe(Band band) => band switch
     {
-        Band.Band24 => "2,4 GHz",
-        Band.Band5 => "5 GHz",
-        Band.Band6 => "6 GHz",
+        Band.Band24 => Strings.Band24,
+        Band.Band5 => Strings.Band5,
+        Band.Band6 => Strings.Band6,
         _ => "?",
     };
 
-    /// <summary>Déduit une bande d'un libellé localisé (« Préférer la bande 5GHz », « 2.4G Only »).</summary>
+    /// <summary>Infers a band from a driver label ("Prefer 5GHz", "2.4G Only").</summary>
     public static Band? ParseLabel(string? label)
     {
         if (string.IsNullOrWhiteSpace(label))
@@ -41,7 +42,7 @@ public static class BandInfo
 
         var s = label.ToLowerInvariant().Replace(',', '.');
 
-        // 2,4 GHz d'abord : « 2.4G » ne doit pas être lu comme du 5 ou du 6.
+        // Check 2.4 GHz first: "2.4G" must not be read as 5 or 6 GHz.
         if (s.Contains("2.4"))
             return Band.Band24;
 
@@ -64,7 +65,7 @@ public static class BandInfo
         : Band.Band6;
 }
 
-/// <summary>Une valeur possible d'un paramètre de pilote, telle que le pilote la déclare.</summary>
+/// <summary>One possible value of a driver parameter, as declared by the driver.</summary>
 public sealed class SettingChoice
 {
     public SettingChoice(string code, string label)
@@ -75,27 +76,27 @@ public sealed class SettingChoice
         Band = BandInfo.ParseLabel(label);
     }
 
-    /// <summary>Code écrit dans le registre (« 0 », « 1 », …).</summary>
+    /// <summary>Code written to the registry ("0", "1", ...).</summary>
     public string Code { get; }
 
-    /// <summary>Libellé brut du pilote, conservé pour le diagnostic.</summary>
+    /// <summary>Raw driver label, kept for diagnostics.</summary>
     public string Label { get; }
 
-    /// <summary>Libellé débarrassé de sa numérotation, pour le menu.</summary>
+    /// <summary>Label without its leading number, for the menu.</summary>
     public string DisplayLabel { get; }
 
     public Band? Band { get; }
 
     private static string CleanLabel(string label)
     {
-        // « 1. All Band » → « All Band » ; « 2.4G Only » est préservé (pas d'espace après le point).
+        // "1. All Band" -> "All Band"; "2.4G Only" is preserved (no space after the dot).
         var s = Regex.Replace(label, @"^\s*\d+\s*[\.\)\-:]\s+", string.Empty);
         s = Regex.Replace(s, @"\s+", " ").Trim();
         return s.Length == 0 ? label.Trim() : s;
     }
 }
 
-/// <summary>Un paramètre avancé lu sous <c>Ndi\params</c>.</summary>
+/// <summary>An advanced parameter read from <c>Ndi\params</c>.</summary>
 public sealed class DriverParam
 {
     public required string Keyword { get; init; }
@@ -108,7 +109,7 @@ public sealed class DriverParam
     public string DisplayName => string.IsNullOrWhiteSpace(ParamDesc) ? Keyword : ParamDesc!;
 }
 
-/// <summary>Un paramètre classé dans une famille, prêt à alimenter le menu.</summary>
+/// <summary>A parameter assigned to a family, ready to feed the menu.</summary>
 public sealed class DriverSetting
 {
     public SettingFamily Family { get; init; }
@@ -117,7 +118,7 @@ public sealed class DriverSetting
     public required IReadOnlyList<SettingChoice> Choices { get; init; }
     public string? DefaultCode { get; init; }
 
-    /// <summary>Code courant, relu du registre à chaque rafraîchissement.</summary>
+    /// <summary>Current code, re-read from the registry on every refresh.</summary>
     public string CurrentCode { get; internal set; } = string.Empty;
 
     public SettingChoice? Current => Choices.FirstOrDefault(
@@ -133,14 +134,14 @@ public sealed class DriverSetting
     public SettingChoice? FindDefault() => DefaultCode is null ? null : WithCode(DefaultCode);
 }
 
-/// <summary>Résultat du classement des paramètres d'une carte.</summary>
+/// <summary>Result of classifying an adapter's parameters.</summary>
 public sealed class AdapterCapabilities
 {
     public DriverSetting? Preference { get; init; }
     public DriverSetting? Lock { get; init; }
     public DriverSetting? Roaming { get; init; }
 
-    /// <summary>Paramètres ignorés et raison, pour le rapport de diagnostic.</summary>
+    /// <summary>Ignored parameters and their reasons, for the diagnostic report.</summary>
     public IReadOnlyList<string> Notes { get; init; } = Array.Empty<string>();
 
     public bool IsSupported => Preference is not null || Lock is not null;
@@ -154,7 +155,7 @@ public sealed class AdapterCapabilities
     };
 }
 
-/// <summary>Instantané d'une carte et de ses paramètres, vivant ou rejoué depuis une fixture.</summary>
+/// <summary>Snapshot of an adapter and its parameters, live or replayed from a fixture.</summary>
 public sealed class DriverSnapshot
 {
     public required string KeyPath { get; init; }
@@ -175,21 +176,20 @@ public sealed class DriverSnapshot
 }
 
 /// <summary>
-/// Classement des paramètres d'un pilote en trois familles.
-/// Aucun nom de carte, aucun code de valeur et aucun libellé n'est codé en dur :
-/// les règles portent sur le nom du mot-clé (non localisé) et, en dernier recours,
-/// sur la présence de bandes dans les libellés.
+/// Classifies driver parameters into three families.
+/// No adapter name, value code or label is hard-coded: rules rely on the keyword
+/// name (not localized) and, as a last resort, on bands mentioned in labels.
 /// </summary>
 public static class SettingClassifier
 {
-    /// <summary>Mots-clés qui contiennent « band » sans parler de bande radio.</summary>
+    /// <summary>Keywords that contain "band" without referring to a radio band.</summary>
     private static readonly string[] Blacklist =
     {
         "wfd", "miracast", "wol", "wake", "offload", "amsdu", "rekey",
         "txpower", "bwselection", "bandwidth",
     };
 
-    /// <summary>Mots-clés connus, classés d'office et prioritaires.</summary>
+    /// <summary>Known keywords, classified directly and given priority.</summary>
     private static readonly Dictionary<string, SettingFamily> Known = new(StringComparer.OrdinalIgnoreCase)
     {
         ["bandselection"] = SettingFamily.Lock,
@@ -205,7 +205,7 @@ public static class SettingClassifier
         return Blacklist.Any(k.Contains);
     }
 
-    /// <summary>Famille d'un mot-clé, ou <c>null</c> s'il n'a rien à voir avec la bande.</summary>
+    /// <summary>Family of a keyword, or <c>null</c> if it is unrelated to bands.</summary>
     public static SettingFamily? ClassifyKeyword(string keyword)
     {
         if (IsBlacklisted(keyword))
@@ -216,7 +216,7 @@ public static class SettingClassifier
 
         var k = keyword.ToLowerInvariant();
 
-        // L'ordre compte : RoamingPreferredBandType contient « roam » mais règle la bande.
+        // Order matters: RoamingPreferredBandType contains "roam" but controls the band.
         if (k.Contains("band") && (k.Contains("select") || k.Contains("lock")))
             return SettingFamily.Lock;
         if (k.Contains("band") && k.Contains("prefer"))
@@ -238,13 +238,13 @@ public static class SettingClassifier
             if (!p.IsEnum || p.Choices.Count < 2)
             {
                 if (p.IsEnum)
-                    notes.Add($"{p.Keyword} — « {p.DisplayName} » ignoré (moins de deux valeurs)");
+                    notes.Add(Strings.NoteIgnored.FormatWith(p.Keyword, p.DisplayName));
                 continue;
             }
 
             if (IsBlacklisted(p.Keyword))
             {
-                notes.Add($"{p.Keyword} — « {p.DisplayName} » exclu (liste noire)");
+                notes.Add(Strings.NoteBlacklisted.FormatWith(p.Keyword, p.DisplayName));
                 continue;
             }
 
@@ -258,8 +258,8 @@ public static class SettingClassifier
             candidates.Add((p, family.Value));
         }
 
-        // Repli par les libellés : un seul paramètre non classé dont les valeurs
-        // nomment explicitement deux bandes différentes en GHz.
+        // Fallback through labels: a single unclassified parameter whose values
+        // explicitly name two different bands in GHz.
         if (candidates.All(c => c.Family != SettingFamily.Preference))
         {
             var byLabel = unclassified
@@ -272,7 +272,7 @@ public static class SettingClassifier
         }
 
         foreach (var p in unclassified)
-            notes.Add($"{p.Keyword} — « {p.DisplayName} » non reconnu");
+            notes.Add(Strings.NoteUnrecognized.FormatWith(p.Keyword, p.DisplayName));
 
         DriverSetting? Best(SettingFamily family)
         {
@@ -289,7 +289,7 @@ public static class SettingClassifier
             if (list.Count > 1)
             {
                 var others = string.Join(", ", list.Where(c => c != chosen).Select(c => c.Param.Keyword));
-                notes.Add($"{chosen.Param.Keyword} retenu pour {FamilyName(family)} ; écartés : {others}");
+                notes.Add(Strings.NoteSelected.FormatWith(chosen.Param.Keyword, FamilyName(family), others));
             }
 
             var setting = new DriverSetting
@@ -303,7 +303,7 @@ public static class SettingClassifier
             };
 
             if (family == SettingFamily.Lock && setting.Choices.All(c => c.Band is null))
-                notes.Add($"{setting.Keyword} : aucune valeur ne nomme une bande, le verrou sera écrit sans vérification");
+                notes.Add(Strings.NoteNoBandValue.FormatWith(setting.Keyword));
 
             return setting;
         }
@@ -319,9 +319,9 @@ public static class SettingClassifier
 
     public static string FamilyName(SettingFamily family) => family switch
     {
-        SettingFamily.Preference => "préférence",
-        SettingFamily.Lock => "verrouillage",
-        SettingFamily.Roaming => "itinérance",
+        SettingFamily.Preference => Strings.FamilyNamePreference,
+        SettingFamily.Lock => Strings.FamilyNameLock,
+        SettingFamily.Roaming => Strings.FamilyNameRoaming,
         _ => family.ToString(),
     };
 }

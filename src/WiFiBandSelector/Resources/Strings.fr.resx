@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>WiFiBandSelector</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>oui</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>non</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(inconnu)</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>(absent)</value>
+  </data>
+  <data name="ErrorPrefix" xml:space="preserve">
+    <value>Erreur : {0}</value>
+  </data>
+  <data name="ProgressPrefix" xml:space="preserve">
+    <value>WiFiBandSelector — {0}</value>
+  </data>
+  <data name="FamilyPreference" xml:space="preserve">
+    <value>Préférence</value>
+  </data>
+  <data name="FamilyLock" xml:space="preserve">
+    <value>Verrouillage</value>
+  </data>
+  <data name="FamilyRoaming" xml:space="preserve">
+    <value>Itinérance</value>
+  </data>
+  <data name="FamilyNamePreference" xml:space="preserve">
+    <value>préférence</value>
+  </data>
+  <data name="FamilyNameLock" xml:space="preserve">
+    <value>verrouillage</value>
+  </data>
+  <data name="FamilyNameRoaming" xml:space="preserve">
+    <value>itinérance</value>
+  </data>
+  <data name="Band24" xml:space="preserve">
+    <value>2,4 GHz</value>
+  </data>
+  <data name="Band5" xml:space="preserve">
+    <value>5 GHz</value>
+  </data>
+  <data name="Band6" xml:space="preserve">
+    <value>6 GHz</value>
+  </data>
+  <data name="BandUnknown" xml:space="preserve">
+    <value>une bande inconnue</value>
+  </data>
+  <data name="TrayNoAdapter" xml:space="preserve">
+    <value>WiFiBandSelector — aucune carte Wi-Fi</value>
+  </data>
+  <data name="TrayUnsupported" xml:space="preserve">
+    <value>WiFiBandSelector — carte non prise en charge</value>
+  </data>
+  <data name="TrayStateLocked" xml:space="preserve">
+    <value>verrouillé {0}</value>
+  </data>
+  <data name="TrayStatePrefers" xml:space="preserve">
+    <value>préfère {0}</value>
+  </data>
+  <data name="TrayStateAutomatic" xml:space="preserve">
+    <value>automatique</value>
+  </data>
+  <data name="TrayAssocConnected" xml:space="preserve">
+    <value>associé {0}</value>
+  </data>
+  <data name="TrayAssocOffline" xml:space="preserve">
+    <value>non connecté</value>
+  </data>
+  <data name="TrayTooltip" xml:space="preserve">
+    <value>Wi-Fi — {0} · {1}</value>
+  </data>
+  <data name="HeaderNoAdapter" xml:space="preserve">
+    <value>Aucune carte Wi-Fi détectée</value>
+  </data>
+  <data name="HeaderLocked" xml:space="preserve">
+    <value>verrouillé sur {0}</value>
+  </data>
+  <data name="HeaderPrefers" xml:space="preserve">
+    <value>préfère {0}</value>
+  </data>
+  <data name="HeaderNoBandSetting" xml:space="preserve">
+    <value>aucun réglage de bande</value>
+  </data>
+  <data name="HeaderAssociated" xml:space="preserve">
+    <value>associé : {0}</value>
+  </data>
+  <data name="HeaderFormat" xml:space="preserve">
+    <value>{0} — {1} ({2})</value>
+  </data>
+  <data name="MenuDiagnostic" xml:space="preserve">
+    <value>Diagnostic…</value>
+  </data>
+  <data name="MenuQuit" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="MenuRestartAdmin" xml:space="preserve">
+    <value>Relancer en administrateur</value>
+  </data>
+  <data name="MenuAdapters" xml:space="preserve">
+    <value>Carte Wi-Fi</value>
+  </data>
+  <data name="MenuNoBandExposed" xml:space="preserve">
+    <value>Aucun réglage de bande exposé par ce pilote</value>
+  </data>
+  <data name="MenuPreferredBand" xml:space="preserve">
+    <value>Bande préférée</value>
+  </data>
+  <data name="MenuLockedOn" xml:space="preserve">
+    <value>Verrouillé sur {0}</value>
+  </data>
+  <data name="MenuLockBand" xml:space="preserve">
+    <value>Verrouiller une bande</value>
+  </data>
+  <data name="MenuLockUnsupported" xml:space="preserve">
+    <value>Verrouillage non pris en charge par ce pilote</value>
+  </data>
+  <data name="MenuRoaming" xml:space="preserve">
+    <value>Itinérance</value>
+  </data>
+  <data name="MenuDriverDefault" xml:space="preserve">
+    <value>Valeur par défaut du pilote ({0})</value>
+  </data>
+  <data name="MenuReconnectNow" xml:space="preserve">
+    <value>Reconnecter maintenant</value>
+  </data>
+  <data name="MenuStartWithWindows" xml:space="preserve">
+    <value>Démarrage avec Windows</value>
+  </data>
+  <data name="MenuUndoLastChange" xml:space="preserve">
+    <value>Annuler la dernière modification</value>
+  </data>
+  <data name="MenuLog" xml:space="preserve">
+    <value>Journal…</value>
+  </data>
+  <data name="MenuAbout" xml:space="preserve">
+    <value>À propos</value>
+  </data>
+  <data name="StartupTipNotInstalled" xml:space="preserve">
+    <value>Disponible une fois l&apos;application installée.</value>
+  </data>
+  <data name="StartupTipNoTask" xml:space="preserve">
+    <value>Tâche planifiée absente : réinstallez l&apos;application.</value>
+  </data>
+  <data name="StartupTipEnabled" xml:space="preserve">
+    <value>Démarre l&apos;application à l&apos;ouverture de session, pour tous les comptes.</value>
+  </data>
+  <data name="StartupTipAdmin" xml:space="preserve">
+    <value>Droits administrateur requis.</value>
+  </data>
+  <data name="BusyBalloon" xml:space="preserve">
+    <value>Une opération est déjà en cours sur la carte Wi-Fi.</value>
+  </data>
+  <data name="AdminRequired" xml:space="preserve">
+    <value>Droits administrateur requis pour modifier un pilote.</value>
+  </data>
+  <data name="AdminRequiredWithMenu" xml:space="preserve">
+    <value>Droits administrateur requis pour modifier un pilote. Utilisez « {0} ».</value>
+  </data>
+  <data name="UndoConfirm" xml:space="preserve">
+    <value>Restaurer les réglages d&apos;avant « {0} » ?</value>
+  </data>
+  <data name="ReconnectRequested" xml:space="preserve">
+    <value>Reconnexion demandée.</value>
+  </data>
+  <data name="ReconnectFailed" xml:space="preserve">
+    <value>Reconnexion impossible : {0}</value>
+  </data>
+  <data name="StartupEnabled" xml:space="preserve">
+    <value>Démarrage avec Windows activé.</value>
+  </data>
+  <data name="StartupDisabled" xml:space="preserve">
+    <value>Démarrage avec Windows désactivé.</value>
+  </data>
+  <data name="StartupFailed" xml:space="preserve">
+    <value>Modification de la tâche planifiée impossible.</value>
+  </data>
+  <data name="ElevationCancelled" xml:space="preserve">
+    <value>Relance en administrateur annulée.</value>
+  </data>
+  <data name="DiagnosticCopied" xml:space="preserve">
+    <value>Rapport écrit et copié dans le presse-papiers. Envoyez-le par mail ou joignez le fichier ouvert dans l&apos;Explorateur.</value>
+  </data>
+  <data name="DiagnosticFailed" xml:space="preserve">
+    <value>Rapport impossible : {0}</value>
+  </data>
+  <data name="AboutText" xml:space="preserve">
+    <value>WiFiBandSelector {0}
+
+Change la bande Wi-Fi de la carte en deux clics : préférence souple, verrouillage, itinérance.
+
+L&apos;application ne fait qu&apos;écrire les réglages que le pilote expose déjà. Aucun pilote n&apos;est modifié, aucune donnée n&apos;est envoyée.
+
+Journal : {1}</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>À propos de WiFiBandSelector</value>
+  </data>
+  <data name="ClipboardUnavailable" xml:space="preserve">
+    <value>Presse-papiers indisponible.</value>
+  </data>
+  <data name="NoSettingForFamily" xml:space="preserve">
+    <value>Ce pilote n&apos;expose pas de réglage de {0}.</value>
+  </data>
+  <data name="InvalidDriverValue" xml:space="preserve">
+    <value>Cette valeur n&apos;existe pas dans le pilote.</value>
+  </data>
+  <data name="BandNotVisible" xml:space="preserve">
+    <value>{0} n&apos;apparaît pas dans l&apos;analyse des réseaux. Le verrou n&apos;a pas été appliqué, pour ne pas couper la connexion.</value>
+  </data>
+  <data name="ChangeDescription" xml:space="preserve">
+    <value>{0} : {1}</value>
+  </data>
+  <data name="ProgressWriting" xml:space="preserve">
+    <value>Écriture du réglage…</value>
+  </data>
+  <data name="WriteRejected" xml:space="preserve">
+    <value>Écriture refusée par le pilote.</value>
+  </data>
+  <data name="RoamingApplied" xml:space="preserve">
+    <value>Itinérance réglée sur « {0} ». Aucune reconnexion nécessaire.</value>
+  </data>
+  <data name="SavedChoice" xml:space="preserve">
+    <value>« {0} » enregistré.</value>
+  </data>
+  <data name="AssociatedOn" xml:space="preserve">
+    <value>Associé en {0}.</value>
+  </data>
+  <data name="ProgressRestarting" xml:space="preserve">
+    <value>Redémarrage de la carte Wi-Fi…</value>
+  </data>
+  <data name="ProgressRollback" xml:space="preserve">
+    <value>Retour arrière…</value>
+  </data>
+  <data name="LockReverted" xml:space="preserve">
+    <value>La carte n&apos;a pas retrouvé de connexion sur cette bande : réglage annulé et connexion rétablie.</value>
+  </data>
+  <data name="LockRevertFailed" xml:space="preserve">
+    <value>La carte n&apos;a pas retrouvé de connexion sur cette bande. Le réglage n&apos;a pas pu être annulé automatiquement : utilisez « {0} ».</value>
+  </data>
+  <data name="PrefNotObserved" xml:space="preserve">
+    <value>Préférence enregistrée, mais la carte reste associée en {0}. Le pilote décide, le signal est peut-être insuffisant sur l&apos;autre bande.</value>
+  </data>
+  <data name="NothingToUndo" xml:space="preserve">
+    <value>Aucune modification à annuler.</value>
+  </data>
+  <data name="UndoWrongAdapter" xml:space="preserve">
+    <value>La modification sauvegardée concerne une autre carte.</value>
+  </data>
+  <data name="ProgressRestoring" xml:space="preserve">
+    <value>Restauration des réglages…</value>
+  </data>
+  <data name="UndoPartial" xml:space="preserve">
+    <value>Certaines valeurs n&apos;ont pas pu être restaurées. Consultez le journal.</value>
+  </data>
+  <data name="UndoRestoredConnected" xml:space="preserve">
+    <value>Réglages précédents restaurés (associé en {0}).</value>
+  </data>
+  <data name="UndoRestoredPending" xml:space="preserve">
+    <value>Réglages précédents restaurés. La connexion n&apos;est pas encore revenue : la carte se reconnectera d&apos;elle-même.</value>
+  </data>
+  <data name="RegistryKeyMissing" xml:space="preserve">
+    <value>Clé de la carte introuvable ou non modifiable.</value>
+  </data>
+  <data name="DriverRefusedValue" xml:space="preserve">
+    <value>Le pilote a refusé la valeur (relue : {0}).</value>
+  </data>
+  <data name="WriteDenied" xml:space="preserve">
+    <value>Écriture refusée : l&apos;application n&apos;est pas élevée.</value>
+  </data>
+  <data name="WriteFailed" xml:space="preserve">
+    <value>Écriture impossible : {0}</value>
+  </data>
+  <data name="ProgressReconnectNetwork" xml:space="preserve">
+    <value>Reconnexion au réseau…</value>
+  </data>
+  <data name="ProgressReconnect" xml:space="preserve">
+    <value>Reconnexion…</value>
+  </data>
+  <data name="LogStartup" xml:space="preserve">
+    <value>Démarrage {0} — élevé : {1}, exécutable : {2}</value>
+  </data>
+  <data name="LogRefreshFailed" xml:space="preserve">
+    <value>Rafraîchissement impossible : {0}</value>
+  </data>
+  <data name="LogAction" xml:space="preserve">
+    <value>Action {0}/{1} : {2} — {3}</value>
+  </data>
+  <data name="LogActionFailed" xml:space="preserve">
+    <value>Action {0}/{1} en échec : {2}</value>
+  </data>
+  <data name="LogUndo" xml:space="preserve">
+    <value>Annulation : {0} — {1}</value>
+  </data>
+  <data name="LogUndoFailed" xml:space="preserve">
+    <value>Annulation en échec : {0}</value>
+  </data>
+  <data name="LogReconnectImpossible" xml:space="preserve">
+    <value>Reconnexion impossible : {0}</value>
+  </data>
+  <data name="LogReportWritten" xml:space="preserve">
+    <value>Rapport de diagnostic écrit : {0}</value>
+  </data>
+  <data name="LogReportFailed" xml:space="preserve">
+    <value>Rapport de diagnostic impossible : {0}</value>
+  </data>
+  <data name="LogShutdown" xml:space="preserve">
+    <value>Arrêt difficile : {0}</value>
+  </data>
+  <data name="LogBalloonFailed" xml:space="preserve">
+    <value>Bulle impossible : {0}</value>
+  </data>
+  <data name="LogWriteFailed" xml:space="preserve">
+    <value>Échec d&apos;écriture {0}={1} : {2}</value>
+  </data>
+  <data name="LogRoaming" xml:space="preserve">
+    <value>Itinérance {0}={1} ({2})</value>
+  </data>
+  <data name="LogWrittenNoBand" xml:space="preserve">
+    <value>{0}={1} écrit sans bande cible</value>
+  </data>
+  <data name="LogAppliedSoft" xml:space="preserve">
+    <value>{0}={1} appliqué par reconnexion douce, bande {2}</value>
+  </data>
+  <data name="LogAppliedRestart" xml:space="preserve">
+    <value>{0}={1} appliqué après redémarrage, bande {2}</value>
+  </data>
+  <data name="LogLockReverted" xml:space="preserve">
+    <value>Verrou {0}={1} annulé : association non rétablie</value>
+  </data>
+  <data name="LogPrefNotObserved" xml:space="preserve">
+    <value>Préférence {0}={1} non observée (bande {2})</value>
+  </data>
+  <data name="LogUndoDetail" xml:space="preserve">
+    <value>Annulation de « {0} »</value>
+  </data>
+  <data name="LogReconnectRequested" xml:space="preserve">
+    <value>Reconnexion demandée par l&apos;utilisateur</value>
+  </data>
+  <data name="LogRestoreFailed" xml:space="preserve">
+    <value>Restauration de {0}={1} impossible : {2}</value>
+  </data>
+  <data name="LogRestartImpossible" xml:space="preserve">
+    <value>Redémarrage impossible : alias d&apos;interface inconnu</value>
+  </data>
+  <data name="LogRestarting" xml:space="preserve">
+    <value>Redémarrage de « {0} »</value>
+  </data>
+  <data name="LogNetshReturned" xml:space="preserve">
+    <value>netsh a retourné {0}/{1} pour « {2} »</value>
+  </data>
+  <data name="LogClassKeyMissing" xml:space="preserve">
+    <value>Clé de classe introuvable : {0}</value>
+  </data>
+  <data name="LogClassKeyEnumFailed" xml:space="preserve">
+    <value>Énumération de la clé de classe impossible : {0}</value>
+  </data>
+  <data name="LogDiscoveryFailed" xml:space="preserve">
+    <value>Découverte de la carte impossible : {0}</value>
+  </data>
+  <data name="LogReadDenied" xml:space="preserve">
+    <value>Lecture refusée pour {0} : {1}</value>
+  </data>
+  <data name="LogReadFailed" xml:space="preserve">
+    <value>Lecture impossible pour {0} : {1}</value>
+  </data>
+  <data name="LogParamUnreadable" xml:space="preserve">
+    <value>Paramètre {0} illisible : {1}</value>
+  </data>
+  <data name="LogInterfaceEnumFailed" xml:space="preserve">
+    <value>Énumération des interfaces impossible : {0}</value>
+  </data>
+  <data name="LogElevationFailed" xml:space="preserve">
+    <value>Relance élevée impossible : {0}</value>
+  </data>
+  <data name="LogExplorerFailed" xml:space="preserve">
+    <value>Ouverture de l&apos;Explorateur impossible : {0}</value>
+  </data>
+  <data name="LogShellOpenFailed" xml:space="preserve">
+    <value>Ouverture de {0} impossible : {1}</value>
+  </data>
+  <data name="LogTimeout" xml:space="preserve">
+    <value>{0} {1} : délai dépassé</value>
+  </data>
+  <data name="LogExecFailed" xml:space="preserve">
+    <value>Exécution de {0} impossible : {1}</value>
+  </data>
+  <data name="LogWlanConnectFailed" xml:space="preserve">
+    <value>WlanConnect a échoué pour « {0} » (code {1})</value>
+  </data>
+  <data name="LogConnectionReadFailed" xml:space="preserve">
+    <value>Lecture de la connexion impossible : {0}</value>
+  </data>
+  <data name="LogBssListFailed" xml:space="preserve">
+    <value>WlanGetNetworkBssList a échoué (code {0})</value>
+  </data>
+  <data name="LogScanFailed" xml:space="preserve">
+    <value>Analyse des points d&apos;accès impossible : {0}</value>
+  </data>
+  <data name="LogWlanOpenFailed" xml:space="preserve">
+    <value>WlanOpenHandle a échoué (code {0})</value>
+  </data>
+  <data name="LogSetCommand" xml:space="preserve">
+    <value>/set {0} {1} → {2}</value>
+  </data>
+  <data name="LogUnhandled" xml:space="preserve">
+    <value>Exception non gérée : {0}</value>
+  </data>
+  <data name="LogTaskReadFailed" xml:space="preserve">
+    <value>Lecture de la tâche planifiée impossible : {0}</value>
+  </data>
+  <data name="LogSettingsUnreadable" xml:space="preserve">
+    <value>Réglages illisibles, valeurs par défaut : {0}</value>
+  </data>
+  <data name="LogSettingsWriteFailed" xml:space="preserve">
+    <value>Écriture des réglages impossible : {0}</value>
+  </data>
+  <data name="CliUnknownFamily" xml:space="preserve">
+    <value>Famille inconnue : {0}</value>
+  </data>
+  <data name="CliNoAdapter" xml:space="preserve">
+    <value>Aucune carte Wi-Fi physique trouvée.</value>
+  </data>
+  <data name="CliResult" xml:space="preserve">
+    <value>{0} : {1}</value>
+  </data>
+  <data name="CrashMessage" xml:space="preserve">
+    <value>WiFiBandSelector a rencontré une erreur.
+
+{0}
+
+Journal : {1}</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>WiFiBandSelector {0} — rapport de diagnostic</value>
+  </data>
+  <data name="ReportDate" xml:space="preserve">
+    <value>Date : {0}</value>
+  </data>
+  <data name="ReportWindows" xml:space="preserve">
+    <value>Windows : {0} (build {1})</value>
+  </data>
+  <data name="ReportArchitecture" xml:space="preserve">
+    <value>Architecture : {0} / OS {1}</value>
+  </data>
+  <data name="ReportElevated" xml:space="preserve">
+    <value>Droits administrateur : {0}</value>
+  </data>
+  <data name="ReportSettings" xml:space="preserve">
+    <value>Réglages : {0}</value>
+  </data>
+  <data name="ReportDiscoveryFailed" xml:space="preserve">
+    <value>Découverte impossible : {0}</value>
+  </data>
+  <data name="ReportNoAdapter" xml:space="preserve">
+    <value>Aucune carte Wi-Fi physique (IfType 71) trouvée dans le registre.</value>
+  </data>
+  <data name="ReportAllInterfaces" xml:space="preserve">
+    <value>Paramètres avancés de toutes les cartes 802.11 (y compris virtuelles) :</value>
+  </data>
+  <data name="ReportLogTail" xml:space="preserve">
+    <value>Dernières lignes du journal :</value>
+  </data>
+  <data name="ReportAdapter" xml:space="preserve">
+    <value>Carte : {0}</value>
+  </data>
+  <data name="ReportAlias" xml:space="preserve">
+    <value>  Alias : {0}</value>
+  </data>
+  <data name="ReportGuid" xml:space="preserve">
+    <value>  GUID : {0}</value>
+  </data>
+  <data name="ReportKey" xml:space="preserve">
+    <value>  Clé : HKLM\{0}</value>
+  </data>
+  <data name="ReportIfType" xml:space="preserve">
+    <value>  IfType : {0}</value>
+  </data>
+  <data name="ReportConnection" xml:space="preserve">
+    <value>  Connexion : {0} (profil « {1} », BSSID {2})</value>
+  </data>
+  <data name="ReportNotConnected" xml:space="preserve">
+    <value>  Connexion : non connecté</value>
+  </data>
+  <data name="ReportRealBand" xml:space="preserve">
+    <value>  Bande réelle : {0} ({1} MHz)</value>
+  </data>
+  <data name="ReportRealBandUnknown" xml:space="preserve">
+    <value>  Bande réelle : inconnue</value>
+  </data>
+  <data name="ReportClassifyFailed" xml:space="preserve">
+    <value>  Classement impossible : {0}</value>
+  </data>
+  <data name="ReportSupport" xml:space="preserve">
+    <value>  Support : {0}</value>
+  </data>
+  <data name="ReportPreference" xml:space="preserve">
+    <value>  Préférence : {0}</value>
+  </data>
+  <data name="ReportLock" xml:space="preserve">
+    <value>  Verrou : {0}</value>
+  </data>
+  <data name="ReportRoaming" xml:space="preserve">
+    <value>  Itinérance : {0}</value>
+  </data>
+  <data name="ReportEnumParams" xml:space="preserve">
+    <value>  Paramètres enum du pilote :</value>
+  </data>
+  <data name="ReportCurrentDefault" xml:space="preserve">
+    <value>        courant = {0} ; défaut = {1}</value>
+  </data>
+  <data name="ReportNotes" xml:space="preserve">
+    <value>  Notes de classement :</value>
+  </data>
+  <data name="ReportClassKeyInaccessible" xml:space="preserve">
+    <value>  Clé de classe inaccessible.</value>
+  </data>
+  <data name="ReportReadFailed" xml:space="preserve">
+    <value>  Lecture impossible : {0}</value>
+  </data>
+  <data name="ReportNotExposed" xml:space="preserve">
+    <value>non exposée</value>
+  </data>
+  <data name="ReportSettingDesc" xml:space="preserve">
+    <value>{0} — « {1} » = {2} (défaut {3})</value>
+  </data>
+  <data name="NoteIgnored" xml:space="preserve">
+    <value>{0} — « {1} » ignoré (moins de deux valeurs)</value>
+  </data>
+  <data name="NoteBlacklisted" xml:space="preserve">
+    <value>{0} — « {1} » exclu (liste noire)</value>
+  </data>
+  <data name="NoteUnrecognized" xml:space="preserve">
+    <value>{0} — « {1} » non reconnu</value>
+  </data>
+  <data name="NoteSelected" xml:space="preserve">
+    <value>{0} retenu pour {1} ; écartés : {2}</value>
+  </data>
+  <data name="NoteNoBandValue" xml:space="preserve">
+    <value>{0} : aucune valeur ne nomme une bande, le verrou sera écrit sans vérification</value>
+  </data>
+</root>

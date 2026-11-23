@@ -1,4 +1,5 @@
 using System.Text;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
@@ -7,14 +8,14 @@ internal static class Program
     [STAThread]
     private static void Main(string[] args)
     {
-        // Mode support : écrit un rapport texte et sort, sans interface.
+        // Support mode: write a text report and exit, without any UI.
         if (args.Length >= 1 && string.Equals(args[0], "/report", StringComparison.OrdinalIgnoreCase))
         {
             WriteReport(args.Length >= 2 ? args[1] : AppPaths.NewReportFile());
             return;
         }
 
-        // Mode support discret : applique un réglage sans ouvrir le menu.
+        // Silent support mode: apply a setting without opening the menu.
         if (args.Length >= 3 && string.Equals(args[0], "/set", StringComparison.OrdinalIgnoreCase))
         {
             Environment.ExitCode = ApplyFromCommandLine(
@@ -67,7 +68,7 @@ internal static class Program
             }
             catch
             {
-                // Rien de plus à faire : le code de sortie suffit.
+                // Nothing else to do: the exit code is enough.
             }
 
             Environment.ExitCode = 1;
@@ -79,12 +80,13 @@ internal static class Program
         var text = string.Empty;
         try
         {
+            // French aliases are kept for compatibility with v0.1 support scripts.
             var family = familyArg.ToLowerInvariant() switch
             {
                 "preference" or "préférence" => SettingFamily.Preference,
                 "lock" or "verrou" => SettingFamily.Lock,
                 "roaming" or "itinérance" => SettingFamily.Roaming,
-                _ => throw new ArgumentException($"Famille inconnue : {familyArg}"),
+                _ => throw new ArgumentException(Strings.CliUnknownFamily.FormatWith(familyArg)),
             };
 
             var settings = AppSettings.Load();
@@ -92,14 +94,14 @@ internal static class Program
             var snapshot = adapters.FirstOrDefault(s =>
                                 string.Equals(s.KeyPath, settings.AdapterKeyPath, StringComparison.OrdinalIgnoreCase))
                             ?? adapters.FirstOrDefault()
-                            ?? throw new InvalidOperationException("Aucune carte Wi-Fi physique trouvée.");
+                            ?? throw new InvalidOperationException(Strings.CliNoAdapter);
 
             var controller = new BandController(
                 snapshot, SettingClassifier.Classify(snapshot.Params), settings);
             var outcome = controller.Apply(family, code);
 
-            text = $"{outcome.Status} : {outcome.Message}";
-            Logger.Write($"/set {familyArg} {code} → {text}");
+            text = Strings.CliResult.FormatWith(outcome.Status, outcome.Message);
+            Logger.Write(Strings.LogSetCommand.FormatWith(familyArg, code, text));
             if (!string.IsNullOrEmpty(outputPath))
                 File.WriteAllText(outputPath, text, new UTF8Encoding(false));
             else
@@ -109,8 +111,8 @@ internal static class Program
         }
         catch (Exception ex)
         {
-            text = $"Erreur : {ex.Message}";
-            Logger.Write($"/set {familyArg} {code} → {text}");
+            text = Strings.ErrorPrefix.FormatWith(ex.Message);
+            Logger.Write(Strings.LogSetCommand.FormatWith(familyArg, code, text));
             if (!string.IsNullOrEmpty(outputPath))
                 File.WriteAllText(outputPath, text, new UTF8Encoding(false));
             else
@@ -124,21 +126,19 @@ internal static class Program
         if (exception is null)
             return;
 
-        Logger.Write($"Exception non gérée : {exception}");
+        Logger.Write(Strings.LogUnhandled.FormatWith(exception));
 
         try
         {
             MessageBox.Show(
-                "WiFiBandSelector a rencontré une erreur.\n\n" +
-                exception.Message +
-                $"\n\nJournal : {AppPaths.LogFile}",
-                "WiFiBandSelector",
+                Strings.CrashMessage.FormatWith(exception.Message, AppPaths.LogFile),
+                Strings.AppTitle,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
         catch
         {
-            // Une erreur dans le rapport d'erreur ne doit pas boucler.
+            // An error while reporting an error must not loop.
         }
     }
 }

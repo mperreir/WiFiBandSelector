@@ -1,9 +1,10 @@
 using System.Reflection;
 using System.Text;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
-/// <summary>Application de zone de notification : menu, icône, actions.</summary>
+/// <summary>Notification-area application: menu, icon and actions.</summary>
 internal sealed class TrayContext : ApplicationContext
 {
     private readonly NotifyIcon _tray = new();
@@ -22,9 +23,7 @@ internal sealed class TrayContext : ApplicationContext
         _tray.MouseClick += OnTrayMouseClick;
         _tray.Visible = true;
 
-        Logger.Write(
-            $"Démarrage {Version} — élevé : {Interop.IsElevated}, " +
-            $"exécutable : {Environment.ProcessPath}");
+        Logger.Write(Strings.LogStartup.FormatWith(Version, Interop.IsElevated, Environment.ProcessPath));
 
         Refresh();
     }
@@ -37,7 +36,7 @@ internal sealed class TrayContext : ApplicationContext
         if (_busy)
         {
             e.Cancel = true;
-            Balloon("Une opération est déjà en cours sur la carte Wi-Fi.");
+            Balloon(Strings.BusyBalloon);
             return;
         }
 
@@ -49,15 +48,15 @@ internal sealed class TrayContext : ApplicationContext
         if (e.Button != MouseButtons.Left)
             return;
 
-        // ContextMenuStrip.Show() crée un popup non activé : un clic à côté ne le
-        // ferme pas. Le clic droit passe par NotifyIcon.ShowContextMenu(), qui
-        // active correctement le menu ; on utilise le même chemin ici.
+        // ContextMenuStrip.Show() creates an unactivated popup: clicking outside does
+        // not dismiss it. Right-click goes through NotifyIcon.ShowContextMenu(), which
+        // activates the menu correctly; use the same path here.
         var show = typeof(NotifyIcon).GetMethod(
             "ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
 
         if (show is null)
         {
-            // Repli si ce membre interne change dans une version future.
+            // Fallback if this internal member changes in a future version.
             _menu.Show(Cursor.Position);
             return;
         }
@@ -65,7 +64,7 @@ internal sealed class TrayContext : ApplicationContext
         show.Invoke(_tray, null);
     }
 
-    /// <summary>Découverte de la carte et rafraîchissement des valeurs.</summary>
+    /// <summary>Discovers the adapter and refreshes values.</summary>
     private void Refresh()
     {
         try
@@ -103,7 +102,7 @@ internal sealed class TrayContext : ApplicationContext
         }
         catch (Exception ex)
         {
-            Logger.Write($"Rafraîchissement impossible : {ex}");
+            Logger.Write(Strings.LogRefreshFailed.FormatWith(ex));
             _controller = null;
         }
 
@@ -136,52 +135,52 @@ internal sealed class TrayContext : ApplicationContext
     private string BuildTooltip()
     {
         if (_controller is null)
-            return "WiFiBandSelector — aucune carte Wi-Fi";
+            return Strings.TrayNoAdapter;
 
         var caps = _controller.Capabilities;
         if (!caps.IsSupported)
-            return "WiFiBandSelector — carte non prise en charge";
+            return Strings.TrayUnsupported;
 
         var lockBand = caps.Lock?.CurrentBand;
         var prefBand = caps.Preference?.CurrentBand;
 
         var state = lockBand is Band lb
-            ? $"verrouillé {BandInfo.Describe(lb)}"
+            ? Strings.TrayStateLocked.FormatWith(BandInfo.Describe(lb))
             : prefBand is Band pb
-                ? $"préfère {BandInfo.Describe(pb)}"
-                : "automatique";
+                ? Strings.TrayStatePrefers.FormatWith(BandInfo.Describe(pb))
+                : Strings.TrayStateAutomatic;
 
         var association = _controller.Status.Connected
-            ? $"associé {BandInfo.Describe(_controller.Status.Band ?? Band.Band24)}"
-            : "non connecté";
+            ? Strings.TrayAssocConnected.FormatWith(BandInfo.Describe(_controller.Status.Band ?? Band.Band24))
+            : Strings.TrayAssocOffline;
 
-        return $"Wi-Fi — {state} · {association}";
+        return Strings.TrayTooltip.FormatWith(state, association);
     }
 
     private string HeaderText()
     {
         if (_controller is null)
-            return "Aucune carte Wi-Fi détectée";
+            return Strings.HeaderNoAdapter;
 
         var caps = _controller.Capabilities;
         var lockBand = caps.Lock?.CurrentBand;
         var prefBand = caps.Preference?.CurrentBand;
 
         var state = lockBand is Band lb
-            ? $"verrouillé sur {BandInfo.Describe(lb)}"
+            ? Strings.HeaderLocked.FormatWith(BandInfo.Describe(lb))
             : prefBand is Band pb
-                ? $"préfère {BandInfo.Describe(pb)}"
-                : caps.IsSupported ? "automatique" : "aucun réglage de bande";
+                ? Strings.HeaderPrefers.FormatWith(BandInfo.Describe(pb))
+                : caps.IsSupported ? Strings.TrayStateAutomatic : Strings.HeaderNoBandSetting;
 
         var association = _controller.Status.Connected
-            ? $"associé : {BandInfo.Describe(_controller.Status.Band ?? Band.Band24)}"
-            : "non connecté";
+            ? Strings.HeaderAssociated.FormatWith(BandInfo.Describe(_controller.Status.Band ?? Band.Band24))
+            : Strings.TrayAssocOffline;
 
         var name = _snapshots.Count > 1
             ? _controller.Snapshot.InterfaceAlias ?? _controller.Snapshot.DriverDesc
             : "Wi-Fi";
 
-        return $"{name} — {state} ({association})";
+        return Strings.HeaderFormat.FormatWith(name, state, association);
     }
 
     private void Rebuild()
@@ -191,10 +190,10 @@ internal sealed class TrayContext : ApplicationContext
 
         if (_controller is null)
         {
-            AddDisabled("Aucune carte Wi-Fi détectée");
+            AddDisabled(Strings.HeaderNoAdapter);
             _menu.Items.Add(new ToolStripSeparator());
-            Add("Diagnostic…", (_, _) => ShowDiagnostic());
-            Add("Quitter", (_, _) => Quit());
+            Add(Strings.MenuDiagnostic, (_, _) => ShowDiagnostic());
+            Add(Strings.MenuQuit, (_, _) => Quit());
             return;
         }
 
@@ -203,11 +202,11 @@ internal sealed class TrayContext : ApplicationContext
         AddDisabled(HeaderText());
 
         if (!Interop.IsElevated)
-            Add("Relancer en administrateur", (_, _) => Elevate());
+            Add(Strings.MenuRestartAdmin, (_, _) => Elevate());
 
         if (_snapshots.Count > 1)
         {
-            var cardMenu = new ToolStripMenuItem("Carte Wi-Fi");
+            var cardMenu = new ToolStripMenuItem(Strings.MenuAdapters);
             foreach (var snapshot in _snapshots)
             {
                 var item = new ToolStripMenuItem(snapshot.DriverDesc)
@@ -225,11 +224,11 @@ internal sealed class TrayContext : ApplicationContext
         _menu.Items.Add(new ToolStripSeparator());
 
         if (!caps.IsSupported)
-            AddDisabled("Aucun réglage de bande exposé par ce pilote");
+            AddDisabled(Strings.MenuNoBandExposed);
 
         if (caps.Preference is not null)
         {
-            AddDisabled("Bande préférée");
+            AddDisabled(Strings.MenuPreferredBand);
             var lockedBand = caps.Lock?.CurrentBand;
 
             foreach (var choice in caps.Preference.Choices)
@@ -241,7 +240,7 @@ internal sealed class TrayContext : ApplicationContext
                 };
 
                 if (lockedBand is Band b)
-                    item.ToolTipText = $"Verrouillé sur {BandInfo.Describe(b)}";
+                    item.ToolTipText = Strings.MenuLockedOn.FormatWith(BandInfo.Describe(b));
 
                 var code = choice.Code;
                 item.Click += async (_, _) => await ApplyAsync(SettingFamily.Preference, code);
@@ -251,7 +250,7 @@ internal sealed class TrayContext : ApplicationContext
 
         if (caps.Lock is not null)
         {
-            var lockMenu = new ToolStripMenuItem("Verrouiller une bande");
+            var lockMenu = new ToolStripMenuItem(Strings.MenuLockBand);
             foreach (var choice in caps.Lock.Choices)
             {
                 var item = new ToolStripMenuItem(choice.DisplayLabel)
@@ -267,12 +266,12 @@ internal sealed class TrayContext : ApplicationContext
         }
         else if (caps.Preference is not null)
         {
-            AddDisabled("Verrouillage non pris en charge par ce pilote");
+            AddDisabled(Strings.MenuLockUnsupported);
         }
 
         if (caps.Roaming is not null)
         {
-            var roamingMenu = new ToolStripMenuItem("Itinérance");
+            var roamingMenu = new ToolStripMenuItem(Strings.MenuRoaming);
             foreach (var choice in caps.Roaming.Choices)
             {
                 var item = new ToolStripMenuItem(choice.DisplayLabel)
@@ -288,7 +287,7 @@ internal sealed class TrayContext : ApplicationContext
             if (defaultChoice is not null)
             {
                 roamingMenu.DropDownItems.Add(new ToolStripSeparator());
-                var item = new ToolStripMenuItem($"Valeur par défaut du pilote ({defaultChoice.DisplayLabel})");
+                var item = new ToolStripMenuItem(Strings.MenuDriverDefault.FormatWith(defaultChoice.DisplayLabel));
                 var code = defaultChoice.Code;
                 item.Click += async (_, _) => await ApplyAsync(SettingFamily.Roaming, code);
                 roamingMenu.DropDownItems.Add(item);
@@ -299,33 +298,33 @@ internal sealed class TrayContext : ApplicationContext
 
         _menu.Items.Add(new ToolStripSeparator());
 
-        var reconnect = Add("Reconnecter maintenant", (_, _) => ReconnectNow());
+        var reconnect = Add(Strings.MenuReconnectNow, (_, _) => ReconnectNow());
         reconnect.Enabled = _controller.Status.Connected;
 
-        var startup = Add("Démarrage avec Windows", (_, _) => ToggleStartup(ScheduledTask.IsEnabled() == true));
+        var startup = Add(Strings.MenuStartWithWindows, (_, _) => ToggleStartup(ScheduledTask.IsEnabled() == true));
         var installed = ScheduledTask.IsRunningFromInstallDirectory();
         var taskState = installed ? ScheduledTask.IsEnabled() : null;
         startup.Checked = taskState == true;
         startup.Enabled = taskState is not null && Interop.IsElevated;
         startup.ToolTipText = !installed
-            ? "Disponible une fois l'application installée."
+            ? Strings.StartupTipNotInstalled
             : taskState is null
-                ? "Tâche planifiée absente : réinstallez l'application."
+                ? Strings.StartupTipNoTask
                 : Interop.IsElevated
-                    ? "Démarre l'application à l'ouverture de session, pour tous les comptes."
-                    : "Droits administrateur requis.";
+                    ? Strings.StartupTipEnabled
+                    : Strings.StartupTipAdmin;
 
         _menu.Items.Add(new ToolStripSeparator());
 
-        var revert = Add("Annuler la dernière modification", (_, _) => _ = RevertAsync());
+        var revert = Add(Strings.MenuUndoLastChange, (_, _) => _ = RevertAsync());
         revert.Enabled = _settings.LastChange is not null && Interop.IsElevated;
         if (_settings.LastChange is not null)
             revert.ToolTipText = _settings.LastChange.Describe();
 
-        Add("Diagnostic…", (_, _) => ShowDiagnostic());
-        Add("Journal…", (_, _) => Interop.ShellOpen(AppPaths.LogFile));
-        Add("À propos", (_, _) => ShowAbout());
-        Add("Quitter", (_, _) => Quit());
+        Add(Strings.MenuDiagnostic, (_, _) => ShowDiagnostic());
+        Add(Strings.MenuLog, (_, _) => Interop.ShellOpen(AppPaths.LogFile));
+        Add(Strings.MenuAbout, (_, _) => ShowAbout());
+        Add(Strings.MenuQuit, (_, _) => Quit());
     }
 
     private ToolStripMenuItem Add(string text, EventHandler? onClick = null)
@@ -347,25 +346,24 @@ internal sealed class TrayContext : ApplicationContext
 
         if (!Interop.IsElevated)
         {
-            Balloon("Droits administrateur requis pour modifier un pilote. Utilisez « Relancer en administrateur ».",
-                ToolTipIcon.Warning);
+            Balloon(Strings.AdminRequiredWithMenu.FormatWith(Strings.MenuRestartAdmin), ToolTipIcon.Warning);
             return;
         }
 
         _busy = true;
         var controller = _controller;
-        var progress = new Progress<string>(message => _tray.Text = Clip("WiFiBandSelector — " + message, 63));
+        var progress = new Progress<string>(message => _tray.Text = Clip(Strings.ProgressPrefix.FormatWith(message), 63));
 
         try
         {
             var outcome = await Task.Run(() => controller.Apply(family, code, progress));
-            Logger.Write($"Action {family}/{code} : {outcome.Status} — {outcome.Message}");
+            Logger.Write(Strings.LogAction.FormatWith(family, code, outcome.Status, outcome.Message));
             Balloon(outcome.Message, IconFor(outcome.Status));
         }
         catch (Exception ex)
         {
-            Logger.Write($"Action {family}/{code} en échec : {ex}");
-            Balloon($"Erreur : {ex.Message}", ToolTipIcon.Error);
+            Logger.Write(Strings.LogActionFailed.FormatWith(family, code, ex));
+            Balloon(Strings.ErrorPrefix.FormatWith(ex.Message), ToolTipIcon.Error);
         }
         finally
         {
@@ -381,13 +379,13 @@ internal sealed class TrayContext : ApplicationContext
 
         if (!Interop.IsElevated)
         {
-            Balloon("Droits administrateur requis pour modifier un pilote.", ToolTipIcon.Warning);
+            Balloon(Strings.AdminRequired, ToolTipIcon.Warning);
             return;
         }
 
         var confirmation = MessageBox.Show(
-            $"Restaurer les réglages d'avant « {_settings.LastChange?.Description} » ?",
-            "WiFiBandSelector",
+            Strings.UndoConfirm.FormatWith(_settings.LastChange?.Description ?? string.Empty),
+            Strings.AppTitle,
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Question,
             MessageBoxDefaultButton.Button2);
@@ -397,18 +395,18 @@ internal sealed class TrayContext : ApplicationContext
 
         _busy = true;
         var controller = _controller;
-        var progress = new Progress<string>(message => _tray.Text = Clip("WiFiBandSelector — " + message, 63));
+        var progress = new Progress<string>(message => _tray.Text = Clip(Strings.ProgressPrefix.FormatWith(message), 63));
 
         try
         {
             var outcome = await Task.Run(() => controller.RevertLastChange(progress));
-            Logger.Write($"Annulation : {outcome.Status} — {outcome.Message}");
+            Logger.Write(Strings.LogUndo.FormatWith(outcome.Status, outcome.Message));
             Balloon(outcome.Message, IconFor(outcome.Status));
         }
         catch (Exception ex)
         {
-            Logger.Write($"Annulation en échec : {ex}");
-            Balloon($"Erreur : {ex.Message}", ToolTipIcon.Error);
+            Logger.Write(Strings.LogUndoFailed.FormatWith(ex));
+            Balloon(Strings.ErrorPrefix.FormatWith(ex.Message), ToolTipIcon.Error);
         }
         finally
         {
@@ -425,12 +423,12 @@ internal sealed class TrayContext : ApplicationContext
         try
         {
             _controller.ReconnectNow();
-            Balloon("Reconnexion demandée.");
+            Balloon(Strings.ReconnectRequested);
         }
         catch (Exception ex)
         {
-            Logger.Write($"Reconnexion impossible : {ex.Message}");
-            Balloon($"Reconnexion impossible : {ex.Message}", ToolTipIcon.Error);
+            Logger.Write(Strings.LogReconnectImpossible.FormatWith(ex.Message));
+            Balloon(Strings.ReconnectFailed.FormatWith(ex.Message), ToolTipIcon.Error);
         }
 
         UpdateTray();
@@ -441,8 +439,8 @@ internal sealed class TrayContext : ApplicationContext
         var ok = ScheduledTask.SetEnabled(!enabled);
         Balloon(
             ok
-                ? enabled ? "Démarrage avec Windows désactivé." : "Démarrage avec Windows activé."
-                : "Modification de la tâche planifiée impossible.",
+                ? enabled ? Strings.StartupDisabled : Strings.StartupEnabled
+                : Strings.StartupFailed,
             ok ? ToolTipIcon.Info : ToolTipIcon.Error);
     }
 
@@ -459,7 +457,7 @@ internal sealed class TrayContext : ApplicationContext
         if (Interop.TryRestartElevated())
             Quit();
         else
-            Balloon("Relance en administrateur annulée.", ToolTipIcon.Warning);
+            Balloon(Strings.ElevationCancelled, ToolTipIcon.Warning);
     }
 
     private void ShowDiagnostic()
@@ -472,31 +470,24 @@ internal sealed class TrayContext : ApplicationContext
             File.WriteAllText(path, report, new UTF8Encoding(true));
             TryCopyToClipboard(report);
 
-            Logger.Write($"Rapport de diagnostic écrit : {path}");
+            Logger.Write(Strings.LogReportWritten.FormatWith(path));
             Interop.ShowInExplorer(path);
-            Balloon(
-                "Rapport écrit et copié dans le presse-papiers. Envoyez-le par mail ou joignez le fichier ouvert dans l'Explorateur.",
-                ToolTipIcon.Info);
+            Balloon(Strings.DiagnosticCopied, ToolTipIcon.Info);
         }
         catch (Exception ex)
         {
-            Logger.Write($"Rapport de diagnostic impossible : {ex}");
-            Balloon($"Rapport impossible : {ex.Message}", ToolTipIcon.Error);
+            Logger.Write(Strings.LogReportFailed.FormatWith(ex));
+            Balloon(Strings.DiagnosticFailed.FormatWith(ex.Message), ToolTipIcon.Error);
         }
     }
 
     private void ShowAbout()
     {
-        var text =
-            $"WiFiBandSelector {Version}{Environment.NewLine}{Environment.NewLine}" +
-            "Change la bande Wi-Fi de la carte en deux clics : préférence souple, verrouillage, itinérance." +
-            Environment.NewLine + Environment.NewLine +
-            "L'application ne fait qu'écrire les réglages que le pilote expose déjà. " +
-            "Aucun pilote n'est modifié, aucune donnée n'est envoyée." +
-            Environment.NewLine + Environment.NewLine +
-            $"Journal : {AppPaths.LogFile}";
-
-        MessageBox.Show(text, "À propos de WiFiBandSelector", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        MessageBox.Show(
+            Strings.AboutText.FormatWith(Version, AppPaths.LogFile),
+            Strings.AboutTitle,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
     }
 
     private void Quit()
@@ -509,7 +500,7 @@ internal sealed class TrayContext : ApplicationContext
         }
         catch (Exception ex)
         {
-            Logger.Write($"Arrêt difficile : {ex.Message}");
+            Logger.Write(Strings.LogShutdown.FormatWith(ex.Message));
         }
 
         ExitThread();
@@ -519,11 +510,11 @@ internal sealed class TrayContext : ApplicationContext
     {
         try
         {
-            _tray.ShowBalloonTip(6000, "WiFiBandSelector", Clip(message, 250), icon);
+            _tray.ShowBalloonTip(6000, Strings.AppTitle, Clip(message, 250), icon);
         }
         catch (Exception ex)
         {
-            Logger.Write($"Bulle impossible : {ex.Message}");
+            Logger.Write(Strings.LogBalloonFailed.FormatWith(ex.Message));
         }
     }
 
@@ -550,7 +541,7 @@ internal sealed class TrayContext : ApplicationContext
             }
         }
 
-        Logger.Write("Presse-papiers indisponible.");
+        Logger.Write(Strings.ClipboardUnavailable);
     }
 
     private static string Clip(string value, int max) =>

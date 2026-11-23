@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
@@ -33,7 +34,7 @@ internal static class Interop
         }
     }
 
-    /// <summary>Relance l'exécutable avec le verbe « runas ». Faux si l'utilisateur refuse l'UAC.</summary>
+    /// <summary>Restarts the executable with the "runas" verb. False if the user declines UAC.</summary>
     public static bool TryRestartElevated()
     {
         try
@@ -53,12 +54,12 @@ internal static class Interop
         }
         catch (Exception ex)
         {
-            Logger.Write($"Relance élevée impossible : {ex.Message}");
+            Logger.Write(Strings.LogElevationFailed.FormatWith(ex.Message));
             return false;
         }
     }
 
-    /// <summary>Ouvre un dossier dans l'Explorateur, fichier sélectionné si fourni.</summary>
+    /// <summary>Opens a folder in Explorer, with the file selected when provided.</summary>
     public static bool ShowInExplorer(string path)
     {
         try
@@ -73,7 +74,7 @@ internal static class Interop
         }
         catch (Exception ex)
         {
-            Logger.Write($"Ouverture de l'Explorateur impossible : {ex.Message}");
+            Logger.Write(Strings.LogExplorerFailed.FormatWith(ex.Message));
             return false;
         }
     }
@@ -87,19 +88,19 @@ internal static class Interop
         }
         catch (Exception ex)
         {
-            Logger.Write($"Ouverture de {path} impossible : {ex.Message}");
+            Logger.Write(Strings.LogShellOpenFailed.FormatWith(path, ex.Message));
             return false;
         }
     }
 
-    /// <summary>Lance un programme sans fenêtre et attend sa fin. Retourne le code de sortie, ou -1.</summary>
+    /// <summary>Runs a program without a window and waits for it. Returns the exit code, or -1.</summary>
     public static int RunHidden(string fileName, string arguments, int timeoutMs)
     {
         var (code, _) = RunCapture(fileName, arguments, timeoutMs);
         return code;
     }
 
-    /// <summary>Lance un programme, capture sa sortie standard et attend sa fin.</summary>
+    /// <summary>Runs a program, captures its standard output and waits for it.</summary>
     public static (int Code, string Output) RunCapture(string fileName, string arguments, int timeoutMs)
     {
         try
@@ -130,10 +131,10 @@ internal static class Interop
                 }
                 catch
                 {
-                    // Ignoré : on a déjà perdu la course.
+                    // Ignore: the timeout has already been reached.
                 }
 
-                Logger.Write($"{fileName} {arguments} : délai dépassé");
+                Logger.Write(Strings.LogTimeout.FormatWith(fileName, arguments));
                 return (-1, string.Empty);
             }
 
@@ -141,7 +142,7 @@ internal static class Interop
         }
         catch (Exception ex)
         {
-            Logger.Write($"Exécution de {fileName} impossible : {ex.Message}");
+            Logger.Write(Strings.LogExecFailed.FormatWith(fileName, ex.Message));
             return (-1, string.Empty);
         }
     }

@@ -1,6 +1,6 @@
-# Génère assets/app.ico (icône de l'exécutable, du menu Démarrer et de l'installateur).
-# Le dessin est volontairement identique à celui de l'icône de la zone de notification :
-# un disque bleu et un glyphe Wi-Fi blanc, lisible dès 16 px.
+# Generates assets/app.ico (executable, Start menu and installer icon).
+# The drawing deliberately matches the notification-area icon:
+# a blue disc and a white Wi-Fi glyph, readable from 16 px.
 param(
     [string]$Output = (Join-Path $PSScriptRoot '..\assets\app.ico')
 )
@@ -89,4 +89,4 @@ $writer.Flush()
 $writer.Dispose()
 $file.Dispose()
 
-Write-Host "Icône écrite : $Output ($($sizes.Count) tailles, $((Get-Item $Output).Length) octets)"
+Write-Host "Icon written: $Output ($($sizes.Count) sizes, $((Get-Item $Output).Length) bytes)"

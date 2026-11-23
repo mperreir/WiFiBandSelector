@@ -1,4 +1,5 @@
 using WiFiBandSelector;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector.Tests;
 
@@ -31,7 +32,7 @@ public sealed class ClassificationTests
         Assert.Equal(Band.Band5, capabilities.Preference.WithCode("2")!.Band);
         Assert.Equal(Band.Band6, capabilities.Preference.WithCode("3")!.Band);
 
-        // Le verrou n'expose pas la bande 6 GHz sur ce pilote : on ne l'invente pas.
+        // This driver's lock does not expose the 6 GHz band: do not invent it.
         Assert.Equal(new Band?[] { null, Band.Band24, Band.Band5 },
             capabilities.Lock!.Choices.Select(c => c.Band).ToArray());
     }
@@ -41,10 +42,13 @@ public sealed class ClassificationTests
     {
         var capabilities = SettingClassifier.Classify(Fixture.Load("mediatek-mt7921").Params);
 
-        var amsduNotes = capabilities.Notes.Count(n =>
-            n.StartsWith("AMSDURx", StringComparison.Ordinal) && n.Contains("liste noire"));
-        Assert.Equal(1, amsduNotes);
-        Assert.DoesNotContain(capabilities.Notes, n => n.Contains("WfdGOOperatingChannel retenu"));
+        Assert.Contains(
+            Strings.NoteBlacklisted.FormatWith("AMSDURx", "AMSDU Rx"),
+            capabilities.Notes);
+        Assert.DoesNotContain(
+            capabilities.Notes,
+            n => n.Contains("WfdGOOperatingChannel", StringComparison.Ordinal)
+                 && n.Contains(SettingClassifier.FamilyName(SettingFamily.Preference), StringComparison.Ordinal));
     }
 
     [Theory]
@@ -92,6 +96,8 @@ public sealed class ClassificationTests
 
         var capabilities = SettingClassifier.Classify(new[] { param });
         Assert.Null(capabilities.Preference);
-        Assert.Contains(capabilities.Notes, n => n.Contains("moins de deux valeurs"));
+        Assert.Contains(
+            Strings.NoteIgnored.FormatWith("PreferredBand", "Bande privilégiée"),
+            capabilities.Notes);
     }
 }

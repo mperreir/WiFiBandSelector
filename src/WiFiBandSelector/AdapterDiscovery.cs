@@ -1,11 +1,12 @@
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
 /// <summary>
-/// Découverte de la carte Wi-Fi et de ses paramètres avancés dans le registre.
+/// Discovers the Wi-Fi adapter and its advanced settings in the registry.
 /// </summary>
 public static class AdapterDiscovery
 {
@@ -17,7 +18,7 @@ public static class AdapterDiscovery
 
     private static readonly Regex InstanceNamePattern = new(@"^\d{4}$", RegexOptions.Compiled);
 
-    /// <summary>Cartes physiques 802.11 trouvées, triées par nom.</summary>
+    /// <summary>Physical 802.11 adapters found, sorted by name.</summary>
     public static List<DriverSnapshot> Discover()
     {
         var snapshots = new List<DriverSnapshot>();
@@ -28,7 +29,7 @@ public static class AdapterDiscovery
             using var classKey = baseKey.OpenSubKey(ClassKeyPath);
             if (classKey is null)
             {
-                Logger.Write($"Clé de classe introuvable : {ClassKeyPath}");
+                Logger.Write(Strings.LogClassKeyMissing.FormatWith(ClassKeyPath));
                 return snapshots;
             }
 
@@ -39,7 +40,7 @@ public static class AdapterDiscovery
             }
             catch (Exception ex)
             {
-                Logger.Write($"Énumération de la clé de classe impossible : {ex.Message}");
+                Logger.Write(Strings.LogClassKeyEnumFailed.FormatWith(ex.Message));
                 return snapshots;
             }
 
@@ -55,7 +56,7 @@ public static class AdapterDiscovery
         }
         catch (Exception ex)
         {
-            Logger.Write($"Découverte de la carte impossible : {ex}");
+            Logger.Write(Strings.LogDiscoveryFailed.FormatWith(ex));
         }
 
         AttachInterfaces(snapshots);
@@ -117,12 +118,12 @@ public static class AdapterDiscovery
         }
         catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException)
         {
-            Logger.Write($"Lecture refusée pour {keyPath} : {ex.Message}");
+            Logger.Write(Strings.LogReadDenied.FormatWith(keyPath, ex.Message));
             return null;
         }
         catch (Exception ex)
         {
-            Logger.Write($"Lecture impossible pour {keyPath} : {ex.Message}");
+            Logger.Write(Strings.LogReadFailed.FormatWith(keyPath, ex.Message));
             return null;
         }
     }
@@ -171,7 +172,7 @@ public static class AdapterDiscovery
         }
         catch (Exception ex)
         {
-            Logger.Write($"Paramètre {keyword} illisible : {ex.Message}");
+            Logger.Write(Strings.LogParamUnreadable.FormatWith(keyword, ex.Message));
             return null;
         }
     }
@@ -191,7 +192,7 @@ public static class AdapterDiscovery
         return string.Compare(a.Code, b.Code, StringComparison.OrdinalIgnoreCase);
     }
 
-    /// <summary>Écarte les adaptateurs virtuels qui partagent le type 71.</summary>
+    /// <summary>Excludes virtual adapters that share type 71.</summary>
     private static bool LooksVirtual(string driverDesc)
     {
         var d = driverDesc.ToLowerInvariant();
@@ -207,7 +208,7 @@ public static class AdapterDiscovery
         }
         catch (Exception ex)
         {
-            Logger.Write($"Énumération des interfaces impossible : {ex.Message}");
+            Logger.Write(Strings.LogInterfaceEnumFailed.FormatWith(ex.Message));
             return;
         }
 

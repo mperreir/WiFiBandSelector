@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>WiFiBandSelector</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>no</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>(unknown)</value>
+  </data>
+  <data name="Absent" xml:space="preserve">
+    <value>(absent)</value>
+  </data>
+  <data name="ErrorPrefix" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="ProgressPrefix" xml:space="preserve">
+    <value>WiFiBandSelector - {0}</value>
+  </data>
+  <data name="FamilyPreference" xml:space="preserve">
+    <value>Preference</value>
+  </data>
+  <data name="FamilyLock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="FamilyRoaming" xml:space="preserve">
+    <value>Roaming</value>
+  </data>
+  <data name="FamilyNamePreference" xml:space="preserve">
+    <value>preference</value>
+  </data>
+  <data name="FamilyNameLock" xml:space="preserve">
+    <value>lock</value>
+  </data>
+  <data name="FamilyNameRoaming" xml:space="preserve">
+    <value>roaming</value>
+  </data>
+  <data name="Band24" xml:space="preserve">
+    <value>2.4 GHz</value>
+  </data>
+  <data name="Band5" xml:space="preserve">
+    <value>5 GHz</value>
+  </data>
+  <data name="Band6" xml:space="preserve">
+    <value>6 GHz</value>
+  </data>
+  <data name="BandUnknown" xml:space="preserve">
+    <value>an unknown band</value>
+  </data>
+  <data name="TrayNoAdapter" xml:space="preserve">
+    <value>WiFiBandSelector - no Wi-Fi adapter</value>
+  </data>
+  <data name="TrayUnsupported" xml:space="preserve">
+    <value>WiFiBandSelector - unsupported adapter</value>
+  </data>
+  <data name="TrayStateLocked" xml:space="preserve">
+    <value>locked {0}</value>
+  </data>
+  <data name="TrayStatePrefers" xml:space="preserve">
+    <value>prefers {0}</value>
+  </data>
+  <data name="TrayStateAutomatic" xml:space="preserve">
+    <value>automatic</value>
+  </data>
+  <data name="TrayAssocConnected" xml:space="preserve">
+    <value>associated {0}</value>
+  </data>
+  <data name="TrayAssocOffline" xml:space="preserve">
+    <value>not connected</value>
+  </data>
+  <data name="TrayTooltip" xml:space="preserve">
+    <value>Wi-Fi - {0} - {1}</value>
+  </data>
+  <data name="HeaderNoAdapter" xml:space="preserve">
+    <value>No Wi-Fi adapter detected</value>
+  </data>
+  <data name="HeaderLocked" xml:space="preserve">
+    <value>locked to {0}</value>
+  </data>
+  <data name="HeaderPrefers" xml:space="preserve">
+    <value>prefers {0}</value>
+  </data>
+  <data name="HeaderNoBandSetting" xml:space="preserve">
+    <value>no band setting</value>
+  </data>
+  <data name="HeaderAssociated" xml:space="preserve">
+    <value>associated: {0}</value>
+  </data>
+  <data name="HeaderFormat" xml:space="preserve">
+    <value>{0} - {1} ({2})</value>
+  </data>
+  <data name="MenuDiagnostic" xml:space="preserve">
+    <value>Diagnostic...</value>
+  </data>
+  <data name="MenuQuit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="MenuRestartAdmin" xml:space="preserve">
+    <value>Restart as administrator</value>
+  </data>
+  <data name="MenuAdapters" xml:space="preserve">
+    <value>Wi-Fi adapter</value>
+  </data>
+  <data name="MenuNoBandExposed" xml:space="preserve">
+    <value>No band setting exposed by this driver</value>
+  </data>
+  <data name="MenuPreferredBand" xml:space="preserve">
+    <value>Preferred band</value>
+  </data>
+  <data name="MenuLockedOn" xml:space="preserve">
+    <value>Locked to {0}</value>
+  </data>
+  <data name="MenuLockBand" xml:space="preserve">
+    <value>Lock a band</value>
+  </data>
+  <data name="MenuLockUnsupported" xml:space="preserve">
+    <value>Locking not supported by this driver</value>
+  </data>
+  <data name="MenuRoaming" xml:space="preserve">
+    <value>Roaming</value>
+  </data>
+  <data name="MenuDriverDefault" xml:space="preserve">
+    <value>Driver default ({0})</value>
+  </data>
+  <data name="MenuReconnectNow" xml:space="preserve">
+    <value>Reconnect now</value>
+  </data>
+  <data name="MenuStartWithWindows" xml:space="preserve">
+    <value>Start with Windows</value>
+  </data>
+  <data name="MenuUndoLastChange" xml:space="preserve">
+    <value>Undo last change</value>
+  </data>
+  <data name="MenuLog" xml:space="preserve">
+    <value>Log...</value>
+  </data>
+  <data name="MenuAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="StartupTipNotInstalled" xml:space="preserve">
+    <value>Available once the application is installed.</value>
+  </data>
+  <data name="StartupTipNoTask" xml:space="preserve">
+    <value>Scheduled task missing: reinstall the application.</value>
+  </data>
+  <data name="StartupTipEnabled" xml:space="preserve">
+    <value>Starts the application at logon, for all accounts.</value>
+  </data>
+  <data name="StartupTipAdmin" xml:space="preserve">
+    <value>Administrator rights required.</value>
+  </data>
+  <data name="BusyBalloon" xml:space="preserve">
+    <value>An operation is already in progress on the Wi-Fi adapter.</value>
+  </data>
+  <data name="AdminRequired" xml:space="preserve">
+    <value>Administrator rights are required to change a driver.</value>
+  </data>
+  <data name="AdminRequiredWithMenu" xml:space="preserve">
+    <value>Administrator rights are required to change a driver. Use &quot;{0}&quot;.</value>
+  </data>
+  <data name="UndoConfirm" xml:space="preserve">
+    <value>Restore the settings from before &quot;{0}&quot;?</value>
+  </data>
+  <data name="ReconnectRequested" xml:space="preserve">
+    <value>Reconnection requested.</value>
+  </data>
+  <data name="ReconnectFailed" xml:space="preserve">
+    <value>Could not reconnect: {0}</value>
+  </data>
+  <data name="StartupEnabled" xml:space="preserve">
+    <value>Start with Windows enabled.</value>
+  </data>
+  <data name="StartupDisabled" xml:space="preserve">
+    <value>Start with Windows disabled.</value>
+  </data>
+  <data name="StartupFailed" xml:space="preserve">
+    <value>Could not change the scheduled task.</value>
+  </data>
+  <data name="ElevationCancelled" xml:space="preserve">
+    <value>Administrator restart cancelled.</value>
+  </data>
+  <data name="DiagnosticCopied" xml:space="preserve">
+    <value>Report written and copied to the clipboard. Email it or attach the file opened in Explorer.</value>
+  </data>
+  <data name="DiagnosticFailed" xml:space="preserve">
+    <value>Could not create the report: {0}</value>
+  </data>
+  <data name="AboutText" xml:space="preserve">
+    <value>WiFiBandSelector {0}
+
+Change the adapter&apos;s Wi-Fi band in two clicks: soft preference, hard lock, roaming.
+
+The application only writes settings the driver already exposes. No driver is modified, no data is sent.
+
+Log: {1}</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About WiFiBandSelector</value>
+  </data>
+  <data name="ClipboardUnavailable" xml:space="preserve">
+    <value>Clipboard unavailable.</value>
+  </data>
+  <data name="NoSettingForFamily" xml:space="preserve">
+    <value>This driver does not expose a {0} setting.</value>
+  </data>
+  <data name="InvalidDriverValue" xml:space="preserve">
+    <value>This value does not exist in the driver.</value>
+  </data>
+  <data name="BandNotVisible" xml:space="preserve">
+    <value>{0} does not appear in the network scan. The lock was not applied, to avoid dropping the connection.</value>
+  </data>
+  <data name="ChangeDescription" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ProgressWriting" xml:space="preserve">
+    <value>Writing the setting...</value>
+  </data>
+  <data name="WriteRejected" xml:space="preserve">
+    <value>Write rejected by the driver.</value>
+  </data>
+  <data name="RoamingApplied" xml:space="preserve">
+    <value>Roaming set to &quot;{0}&quot;. No reconnection needed.</value>
+  </data>
+  <data name="SavedChoice" xml:space="preserve">
+    <value>&quot;{0}&quot; saved.</value>
+  </data>
+  <data name="AssociatedOn" xml:space="preserve">
+    <value>Associated on {0}.</value>
+  </data>
+  <data name="ProgressRestarting" xml:space="preserve">
+    <value>Restarting the Wi-Fi adapter...</value>
+  </data>
+  <data name="ProgressRollback" xml:space="preserve">
+    <value>Rolling back...</value>
+  </data>
+  <data name="LockReverted" xml:space="preserve">
+    <value>The adapter did not reconnect on this band: setting reverted and connection restored.</value>
+  </data>
+  <data name="LockRevertFailed" xml:space="preserve">
+    <value>The adapter did not reconnect on this band. The setting could not be reverted automatically: use &quot;{0}&quot;.</value>
+  </data>
+  <data name="PrefNotObserved" xml:space="preserve">
+    <value>Preference saved, but the adapter stays associated on {0}. The driver decides; the signal may be too weak on the other band.</value>
+  </data>
+  <data name="NothingToUndo" xml:space="preserve">
+    <value>Nothing to undo.</value>
+  </data>
+  <data name="UndoWrongAdapter" xml:space="preserve">
+    <value>The saved change refers to another adapter.</value>
+  </data>
+  <data name="ProgressRestoring" xml:space="preserve">
+    <value>Restoring settings...</value>
+  </data>
+  <data name="UndoPartial" xml:space="preserve">
+    <value>Some values could not be restored. See the log.</value>
+  </data>
+  <data name="UndoRestoredConnected" xml:space="preserve">
+    <value>Previous settings restored (associated on {0}).</value>
+  </data>
+  <data name="UndoRestoredPending" xml:space="preserve">
+    <value>Previous settings restored. The connection has not returned yet: the adapter will reconnect on its own.</value>
+  </data>
+  <data name="RegistryKeyMissing" xml:space="preserve">
+    <value>Adapter registry key missing or not writable.</value>
+  </data>
+  <data name="DriverRefusedValue" xml:space="preserve">
+    <value>The driver rejected the value (read back: {0}).</value>
+  </data>
+  <data name="WriteDenied" xml:space="preserve">
+    <value>Write denied: the application is not elevated.</value>
+  </data>
+  <data name="WriteFailed" xml:space="preserve">
+    <value>Could not write: {0}</value>
+  </data>
+  <data name="ProgressReconnectNetwork" xml:space="preserve">
+    <value>Reconnecting to the network...</value>
+  </data>
+  <data name="ProgressReconnect" xml:space="preserve">
+    <value>Reconnecting...</value>
+  </data>
+  <data name="LogStartup" xml:space="preserve">
+    <value>Started {0} - elevated: {1}, executable: {2}</value>
+  </data>
+  <data name="LogRefreshFailed" xml:space="preserve">
+    <value>Refresh failed: {0}</value>
+  </data>
+  <data name="LogAction" xml:space="preserve">
+    <value>Action {0}/{1}: {2} - {3}</value>
+  </data>
+  <data name="LogActionFailed" xml:space="preserve">
+    <value>Action {0}/{1} failed: {2}</value>
+  </data>
+  <data name="LogUndo" xml:space="preserve">
+    <value>Undo: {0} - {1}</value>
+  </data>
+  <data name="LogUndoFailed" xml:space="preserve">
+    <value>Undo failed: {0}</value>
+  </data>
+  <data name="LogReconnectImpossible" xml:space="preserve">
+    <value>Could not reconnect: {0}</value>
+  </data>
+  <data name="LogReportWritten" xml:space="preserve">
+    <value>Diagnostic report written: {0}</value>
+  </data>
+  <data name="LogReportFailed" xml:space="preserve">
+    <value>Could not create the diagnostic report: {0}</value>
+  </data>
+  <data name="LogShutdown" xml:space="preserve">
+    <value>Shutdown error: {0}</value>
+  </data>
+  <data name="LogBalloonFailed" xml:space="preserve">
+    <value>Could not show a notification: {0}</value>
+  </data>
+  <data name="LogWriteFailed" xml:space="preserve">
+    <value>Write failed {0}={1}: {2}</value>
+  </data>
+  <data name="LogRoaming" xml:space="preserve">
+    <value>Roaming {0}={1} ({2})</value>
+  </data>
+  <data name="LogWrittenNoBand" xml:space="preserve">
+    <value>{0}={1} written with no target band</value>
+  </data>
+  <data name="LogAppliedSoft" xml:space="preserve">
+    <value>{0}={1} applied by soft reconnect, band {2}</value>
+  </data>
+  <data name="LogAppliedRestart" xml:space="preserve">
+    <value>{0}={1} applied after restart, band {2}</value>
+  </data>
+  <data name="LogLockReverted" xml:space="preserve">
+    <value>Lock {0}={1} reverted: association not restored</value>
+  </data>
+  <data name="LogPrefNotObserved" xml:space="preserve">
+    <value>Preference {0}={1} not observed (band {2})</value>
+  </data>
+  <data name="LogUndoDetail" xml:space="preserve">
+    <value>Undoing &quot;{0}&quot;</value>
+  </data>
+  <data name="LogReconnectRequested" xml:space="preserve">
+    <value>Reconnection requested by the user</value>
+  </data>
+  <data name="LogRestoreFailed" xml:space="preserve">
+    <value>Could not restore {0}={1}: {2}</value>
+  </data>
+  <data name="LogRestartImpossible" xml:space="preserve">
+    <value>Restart impossible: unknown interface alias</value>
+  </data>
+  <data name="LogRestarting" xml:space="preserve">
+    <value>Restarting &quot;{0}&quot;</value>
+  </data>
+  <data name="LogNetshReturned" xml:space="preserve">
+    <value>netsh returned {0}/{1} for &quot;{2}&quot;</value>
+  </data>
+  <data name="LogClassKeyMissing" xml:space="preserve">
+    <value>Class key not found: {0}</value>
+  </data>
+  <data name="LogClassKeyEnumFailed" xml:space="preserve">
+    <value>Could not enumerate the class key: {0}</value>
+  </data>
+  <data name="LogDiscoveryFailed" xml:space="preserve">
+    <value>Adapter discovery failed: {0}</value>
+  </data>
+  <data name="LogReadDenied" xml:space="preserve">
+    <value>Read denied for {0}: {1}</value>
+  </data>
+  <data name="LogReadFailed" xml:space="preserve">
+    <value>Could not read {0}: {1}</value>
+  </data>
+  <data name="LogParamUnreadable" xml:space="preserve">
+    <value>Parameter {0} unreadable: {1}</value>
+  </data>
+  <data name="LogInterfaceEnumFailed" xml:space="preserve">
+    <value>Could not enumerate interfaces: {0}</value>
+  </data>
+  <data name="LogElevationFailed" xml:space="preserve">
+    <value>Could not restart elevated: {0}</value>
+  </data>
+  <data name="LogExplorerFailed" xml:space="preserve">
+    <value>Could not open Explorer: {0}</value>
+  </data>
+  <data name="LogShellOpenFailed" xml:space="preserve">
+    <value>Could not open {0}: {1}</value>
+  </data>
+  <data name="LogTimeout" xml:space="preserve">
+    <value>{0} {1}: timed out</value>
+  </data>
+  <data name="LogExecFailed" xml:space="preserve">
+    <value>Could not run {0}: {1}</value>
+  </data>
+  <data name="LogWlanConnectFailed" xml:space="preserve">
+    <value>WlanConnect failed for &quot;{0}&quot; (code {1})</value>
+  </data>
+  <data name="LogConnectionReadFailed" xml:space="preserve">
+    <value>Could not read the connection: {0}</value>
+  </data>
+  <data name="LogBssListFailed" xml:space="preserve">
+    <value>WlanGetNetworkBssList failed (code {0})</value>
+  </data>
+  <data name="LogScanFailed" xml:space="preserve">
+    <value>Could not scan access points: {0}</value>
+  </data>
+  <data name="LogWlanOpenFailed" xml:space="preserve">
+    <value>WlanOpenHandle failed (code {0})</value>
+  </data>
+  <data name="LogSetCommand" xml:space="preserve">
+    <value>/set {0} {1} -&gt; {2}</value>
+  </data>
+  <data name="LogUnhandled" xml:space="preserve">
+    <value>Unhandled exception: {0}</value>
+  </data>
+  <data name="LogTaskReadFailed" xml:space="preserve">
+    <value>Could not read the scheduled task: {0}</value>
+  </data>
+  <data name="LogSettingsUnreadable" xml:space="preserve">
+    <value>Settings unreadable, using defaults: {0}</value>
+  </data>
+  <data name="LogSettingsWriteFailed" xml:space="preserve">
+    <value>Could not save settings: {0}</value>
+  </data>
+  <data name="CliUnknownFamily" xml:space="preserve">
+    <value>Unknown family: {0}</value>
+  </data>
+  <data name="CliNoAdapter" xml:space="preserve">
+    <value>No physical Wi-Fi adapter found.</value>
+  </data>
+  <data name="CliResult" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="CrashMessage" xml:space="preserve">
+    <value>WiFiBandSelector encountered an error.
+
+{0}
+
+Log: {1}</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>WiFiBandSelector {0} - diagnostic report</value>
+  </data>
+  <data name="ReportDate" xml:space="preserve">
+    <value>Date: {0}</value>
+  </data>
+  <data name="ReportWindows" xml:space="preserve">
+    <value>Windows: {0} (build {1})</value>
+  </data>
+  <data name="ReportArchitecture" xml:space="preserve">
+    <value>Architecture: {0} / OS {1}</value>
+  </data>
+  <data name="ReportElevated" xml:space="preserve">
+    <value>Administrator rights: {0}</value>
+  </data>
+  <data name="ReportSettings" xml:space="preserve">
+    <value>Settings: {0}</value>
+  </data>
+  <data name="ReportDiscoveryFailed" xml:space="preserve">
+    <value>Discovery failed: {0}</value>
+  </data>
+  <data name="ReportNoAdapter" xml:space="preserve">
+    <value>No physical Wi-Fi adapter (IfType 71) found in the registry.</value>
+  </data>
+  <data name="ReportAllInterfaces" xml:space="preserve">
+    <value>Advanced parameters of all 802.11 adapters (including virtual):</value>
+  </data>
+  <data name="ReportLogTail" xml:space="preserve">
+    <value>Last log lines:</value>
+  </data>
+  <data name="ReportAdapter" xml:space="preserve">
+    <value>Adapter: {0}</value>
+  </data>
+  <data name="ReportAlias" xml:space="preserve">
+    <value>  Alias: {0}</value>
+  </data>
+  <data name="ReportGuid" xml:space="preserve">
+    <value>  GUID: {0}</value>
+  </data>
+  <data name="ReportKey" xml:space="preserve">
+    <value>  Key: HKLM\{0}</value>
+  </data>
+  <data name="ReportIfType" xml:space="preserve">
+    <value>  IfType: {0}</value>
+  </data>
+  <data name="ReportConnection" xml:space="preserve">
+    <value>  Connection: {0} (profile &quot;{1}&quot;, BSSID {2})</value>
+  </data>
+  <data name="ReportNotConnected" xml:space="preserve">
+    <value>  Connection: not connected</value>
+  </data>
+  <data name="ReportRealBand" xml:space="preserve">
+    <value>  Real band: {0} ({1} MHz)</value>
+  </data>
+  <data name="ReportRealBandUnknown" xml:space="preserve">
+    <value>  Real band: unknown</value>
+  </data>
+  <data name="ReportClassifyFailed" xml:space="preserve">
+    <value>  Classification failed: {0}</value>
+  </data>
+  <data name="ReportSupport" xml:space="preserve">
+    <value>  Supported: {0}</value>
+  </data>
+  <data name="ReportPreference" xml:space="preserve">
+    <value>  Preference: {0}</value>
+  </data>
+  <data name="ReportLock" xml:space="preserve">
+    <value>  Lock: {0}</value>
+  </data>
+  <data name="ReportRoaming" xml:space="preserve">
+    <value>  Roaming: {0}</value>
+  </data>
+  <data name="ReportEnumParams" xml:space="preserve">
+    <value>  Driver enum parameters:</value>
+  </data>
+  <data name="ReportCurrentDefault" xml:space="preserve">
+    <value>        current = {0}; default = {1}</value>
+  </data>
+  <data name="ReportNotes" xml:space="preserve">
+    <value>  Classification notes:</value>
+  </data>
+  <data name="ReportClassKeyInaccessible" xml:space="preserve">
+    <value>  Class key inaccessible.</value>
+  </data>
+  <data name="ReportReadFailed" xml:space="preserve">
+    <value>  Read failed: {0}</value>
+  </data>
+  <data name="ReportNotExposed" xml:space="preserve">
+    <value>not exposed</value>
+  </data>
+  <data name="ReportSettingDesc" xml:space="preserve">
+    <value>{0} - &quot;{1}&quot; = {2} (default {3})</value>
+  </data>
+  <data name="NoteIgnored" xml:space="preserve">
+    <value>{0} - &quot;{1}&quot; ignored (fewer than two values)</value>
+  </data>
+  <data name="NoteBlacklisted" xml:space="preserve">
+    <value>{0} - &quot;{1}&quot; excluded (blacklist)</value>
+  </data>
+  <data name="NoteUnrecognized" xml:space="preserve">
+    <value>{0} - &quot;{1}&quot; not recognized</value>
+  </data>
+  <data name="NoteSelected" xml:space="preserve">
+    <value>{0} selected for {1}; discarded: {2}</value>
+  </data>
+  <data name="NoteNoBandValue" xml:space="preserve">
+    <value>{0}: no value names a band, the lock will be written without verification</value>
+  </data>
+</root>

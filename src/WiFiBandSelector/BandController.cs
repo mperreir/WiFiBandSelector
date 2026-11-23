@@ -1,22 +1,23 @@
 using Microsoft.Win32;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
 public enum ApplyStatus
 {
-    /// <summary>Écrit et observé (ou sans effet observable attendu).</summary>
+    /// <summary>Written and observed (or no observable effect expected).</summary>
     Applied,
 
-    /// <summary>Écrit, mais la carte ne suit pas la préférence demandée.</summary>
+    /// <summary>Written, but the adapter does not follow the requested preference.</summary>
     AppliedNotObserved,
 
-    /// <summary>Écrit puis annulé automatiquement, faute de connexion.</summary>
+    /// <summary>Written then automatically reverted because no connection came back.</summary>
     Reverted,
 
-    /// <summary>Refusé avant toute écriture.</summary>
+    /// <summary>Refused before any write.</summary>
     Refused,
 
-    /// <summary>Erreur technique.</summary>
+    /// <summary>Technical error.</summary>
     Failed,
 }
 
@@ -26,8 +27,8 @@ public sealed record ApplyOutcome(ApplyStatus Status, string Message)
 }
 
 /// <summary>
-/// Lecture et écriture effectives des réglages : sauvegarde, écriture vérifiée,
-/// application (reconnexion douce puis redémarrage de la carte), retour arrière.
+/// Actually reads and writes settings: backup, verified write, apply (soft reconnect
+/// then adapter restart) and rollback.
 /// </summary>
 public sealed class BandController
 {
@@ -44,20 +45,20 @@ public sealed class BandController
 
     public AdapterCapabilities Capabilities { get; internal set; }
 
-    /// <summary>État radio réel, relu à chaque rafraîchissement.</summary>
+    /// <summary>Actual radio state, re-read on every refresh.</summary>
     public WlanStatus Status { get; private set; } = WlanStatus.Disconnected;
 
     public Band? AssociatedBand => Status.Band;
 
     public static string FamilyLabel(SettingFamily family) => family switch
     {
-        SettingFamily.Preference => "Préférence",
-        SettingFamily.Lock => "Verrouillage",
-        SettingFamily.Roaming => "Itinérance",
+        SettingFamily.Preference => Strings.FamilyPreference,
+        SettingFamily.Lock => Strings.FamilyLock,
+        SettingFamily.Roaming => Strings.FamilyRoaming,
         _ => family.ToString(),
     };
 
-    /// <summary>Relit les valeurs du registre et l'état radio. Jamais de cache durable.</summary>
+    /// <summary>Re-reads registry values and radio state. Never uses a durable cache.</summary>
     public void Reload()
     {
         try
@@ -84,41 +85,41 @@ public sealed class BandController
         }
         catch (Exception ex)
         {
-            Logger.Write($"Rafraîchissement impossible : {ex.Message}");
+            Logger.Write(Strings.LogRefreshFailed.FormatWith(ex.Message));
         }
     }
 
-    /// <summary>Écrit un réglage, l'applique et vérifie son effet.</summary>
+    /// <summary>Writes a setting, applies it and checks its effect.</summary>
     public ApplyOutcome Apply(SettingFamily family, string code, IProgress<string>? progress = null)
     {
         Reload();
 
         var setting = Capabilities.For(family);
         if (setting is null)
-            return new ApplyOutcome(ApplyStatus.Failed, $"Ce pilote n'expose pas de réglage de {FamilyLabel(family).ToLowerInvariant()}.");
+            return new ApplyOutcome(
+                ApplyStatus.Failed, Strings.NoSettingForFamily.FormatWith(SettingClassifier.FamilyName(family)));
 
         var choice = setting.WithCode(code);
         if (choice is null)
-            return new ApplyOutcome(ApplyStatus.Failed, "Cette valeur n'existe pas dans le pilote.");
+            return new ApplyOutcome(ApplyStatus.Failed, Strings.InvalidDriverValue);
 
         if (!Interop.IsElevated)
-            return new ApplyOutcome(ApplyStatus.Refused, "Droits administrateur requis pour modifier un pilote.");
+            return new ApplyOutcome(ApplyStatus.Refused, Strings.AdminRequired);
 
         if (family == SettingFamily.Lock && choice.Band is Band targetBand && !IsBandAvailable(targetBand))
         {
             return new ApplyOutcome(
                 ApplyStatus.Refused,
-                $"{BandInfo.Describe(targetBand)} n'apparaît pas dans l'analyse des réseaux. " +
-                "Le verrou n'a pas été appliqué, pour ne pas couper la connexion.");
+                Strings.BandNotVisible.FormatWith(BandInfo.Describe(targetBand)));
         }
 
-        var backup = CaptureBackup($"{FamilyLabel(family)} : {choice.DisplayLabel}");
+        var backup = CaptureBackup(Strings.ChangeDescription.FormatWith(FamilyLabel(family), choice.DisplayLabel));
 
-        progress?.Report("Écriture du réglage…");
+        progress?.Report(Strings.ProgressWriting);
         if (!TryWrite(setting.Keyword, code, out var error))
         {
-            Logger.Write($"Échec d'écriture {setting.Keyword}={code} : {error}");
-            return new ApplyOutcome(ApplyStatus.Failed, error ?? "Écriture refusée par le pilote.");
+            Logger.Write(Strings.LogWriteFailed.FormatWith(setting.Keyword, code, error));
+            return new ApplyOutcome(ApplyStatus.Failed, error ?? Strings.WriteRejected);
         }
 
         _settings.LastChange = backup;
@@ -127,103 +128,102 @@ public sealed class BandController
 
         if (family == SettingFamily.Roaming)
         {
-            Logger.Write($"Itinérance {setting.Keyword}={code} ({choice.DisplayLabel})");
+            Logger.Write(Strings.LogRoaming.FormatWith(setting.Keyword, code, choice.DisplayLabel));
             return new ApplyOutcome(
                 ApplyStatus.Applied,
-                $"Itinérance réglée sur « {choice.DisplayLabel} ». Aucune reconnexion nécessaire.");
+                Strings.RoamingApplied.FormatWith(choice.DisplayLabel));
         }
 
         var desired = choice.Band;
         if (desired is null)
         {
             ApplySoftReconnect(progress);
-            Logger.Write($"{setting.Keyword}={code} écrit sans bande cible");
-            return new ApplyOutcome(ApplyStatus.Applied, $"« {choice.DisplayLabel} » enregistré.");
+            Logger.Write(Strings.LogWrittenNoBand.FormatWith(setting.Keyword, code));
+            return new ApplyOutcome(ApplyStatus.Applied, Strings.SavedChoice.FormatWith(choice.DisplayLabel));
         }
 
-        progress?.Report("Reconnexion…");
+        progress?.Report(Strings.ProgressReconnect);
         var soft = ApplySoftReconnect(progress);
         if (soft && WaitForBand(desired.Value, 12000))
         {
-            Logger.Write($"{setting.Keyword}={code} appliqué par reconnexion douce, bande {desired}");
+            Logger.Write(Strings.LogAppliedSoft.FormatWith(setting.Keyword, code, desired));
             return new ApplyOutcome(
                 ApplyStatus.Applied,
-                $"Associé en {BandInfo.Describe(desired.Value)}.");
+                Strings.AssociatedOn.FormatWith(BandInfo.Describe(desired.Value)));
         }
 
-        progress?.Report("Redémarrage de la carte Wi-Fi…");
+        progress?.Report(Strings.ProgressRestarting);
         if (RestartAdapter() && WaitForBand(desired.Value, 30000))
         {
-            Logger.Write($"{setting.Keyword}={code} appliqué après redémarrage, bande {desired}");
+            Logger.Write(Strings.LogAppliedRestart.FormatWith(setting.Keyword, code, desired));
             return new ApplyOutcome(
                 ApplyStatus.Applied,
-                $"Associé en {BandInfo.Describe(desired.Value)}.");
+                Strings.AssociatedOn.FormatWith(BandInfo.Describe(desired.Value)));
         }
 
         if (family == SettingFamily.Lock)
         {
-            progress?.Report("Retour arrière…");
+            progress?.Report(Strings.ProgressRollback);
             var reverted = Restore(backup);
             RestartAdapter();
             WaitForBand(null, 30000);
 
-            Logger.Write($"Verrou {setting.Keyword}={code} annulé : association non rétablie");
+            Logger.Write(Strings.LogLockReverted.FormatWith(setting.Keyword, code));
             return new ApplyOutcome(
                 ApplyStatus.Reverted,
                 reverted
-                    ? "La carte n'a pas retrouvé de connexion sur cette bande : réglage annulé et connexion rétablie."
-                    : "La carte n'a pas retrouvé de connexion sur cette bande. Le réglage n'a pas pu être annulé automatiquement : utilisez « Annuler la dernière modification ».");
+                    ? Strings.LockReverted
+                    : Strings.LockRevertFailed.FormatWith(Strings.MenuUndoLastChange));
         }
 
-        Logger.Write($"Préférence {setting.Keyword}={code} non observée (bande {Status.Band})");
+        Logger.Write(Strings.LogPrefNotObserved.FormatWith(setting.Keyword, code, Status.Band));
         return new ApplyOutcome(
             ApplyStatus.AppliedNotObserved,
-            $"Préférence enregistrée, mais la carte reste associée en {DescribeBand(Status.Band)}. " +
-            "Le pilote décide, le signal est peut-être insuffisant sur l'autre bande.");
+            Strings.PrefNotObserved.FormatWith(DescribeBand(Status.Band)));
     }
 
-    /// <summary>Restaure les valeurs d'avant la dernière modification.</summary>
+    /// <summary>Restores the values from before the last change.</summary>
     public ApplyOutcome RevertLastChange(IProgress<string>? progress = null)
     {
         var last = _settings.LastChange;
         if (last is null)
-            return new ApplyOutcome(ApplyStatus.Refused, "Aucune modification à annuler.");
+            return new ApplyOutcome(ApplyStatus.Refused, Strings.NothingToUndo);
 
         if (!Interop.IsElevated)
-            return new ApplyOutcome(ApplyStatus.Refused, "Droits administrateur requis pour modifier un pilote.");
+            return new ApplyOutcome(ApplyStatus.Refused, Strings.AdminRequired);
 
         if (!string.Equals(last.AdapterKeyPath, Snapshot.KeyPath, StringComparison.OrdinalIgnoreCase))
-            return new ApplyOutcome(ApplyStatus.Failed, "La modification sauvegardée concerne une autre carte.");
+            return new ApplyOutcome(ApplyStatus.Failed, Strings.UndoWrongAdapter);
 
-        progress?.Report("Restauration des réglages…");
+        progress?.Report(Strings.ProgressRestoring);
         var ok = Restore(last);
         _settings.LastChange = null;
         _settings.Save();
         Reload();
 
         if (!ok)
-            return new ApplyOutcome(ApplyStatus.Failed, "Certaines valeurs n'ont pas pu être restaurées. Consultez le journal.");
+            return new ApplyOutcome(ApplyStatus.Failed, Strings.UndoPartial);
 
-        progress?.Report("Reconnexion…");
+        progress?.Report(Strings.ProgressReconnect);
         RestartAdapter();
         var connected = WaitForBand(null, 30000);
 
-        Logger.Write($"Annulation de « {last.Description} »");
+        Logger.Write(Strings.LogUndoDetail.FormatWith(last.Description));
         return new ApplyOutcome(
             ApplyStatus.Reverted,
             connected
-                ? $"Réglages précédents restaurés (associé en {DescribeBand(Status.Band)})."
-                : "Réglages précédents restaurés. La connexion n'est pas encore revenue : la carte se reconnectera d'elle-même.");
+                ? Strings.UndoRestoredConnected.FormatWith(DescribeBand(Status.Band))
+                : Strings.UndoRestoredPending);
     }
 
-    /// <summary>Reconnecte sans changer de réglage.</summary>
+    /// <summary>Reconnects without changing any setting.</summary>
     public void ReconnectNow()
     {
         Reload();
         if (Status.Connected && !string.IsNullOrEmpty(Status.ProfileName))
         {
             WlanApi.Reconnect(Snapshot.InterfaceGuid!.Value, Status.ProfileName);
-            Logger.Write("Reconnexion demandée par l'utilisateur");
+            Logger.Write(Strings.LogReconnectRequested);
         }
     }
 
@@ -237,7 +237,7 @@ public sealed class BandController
 
         var visible = WlanApi.ScanBands(guid, 2500);
 
-        // Analyse vide : on ne conclut pas, le retour arrière automatique protège.
+        // Empty scan: do not conclude, the automatic rollback is the safety net.
         if (visible.Count == 0)
             return true;
 
@@ -271,7 +271,7 @@ public sealed class BandController
             if (!TryWrite(keyword, value, out var error))
             {
                 ok = false;
-                Logger.Write($"Restauration de {keyword}={value} impossible : {error}");
+                Logger.Write(Strings.LogRestoreFailed.FormatWith(keyword, value, error));
             }
         }
 
@@ -288,7 +288,7 @@ public sealed class BandController
             using var key = baseKey.OpenSubKey(Snapshot.KeyPath, writable: true);
             if (key is null)
             {
-                error = "Clé de la carte introuvable ou non modifiable.";
+                error = Strings.RegistryKeyMissing;
                 return false;
             }
 
@@ -298,7 +298,7 @@ public sealed class BandController
             var readBack = key.GetValue(keyword)?.ToString();
             if (!string.Equals(readBack, code, StringComparison.OrdinalIgnoreCase))
             {
-                error = "Le pilote a refusé la valeur (relue : " + (readBack ?? "absente") + ").";
+                error = Strings.DriverRefusedValue.FormatWith(readBack ?? Strings.Absent);
                 return false;
             }
 
@@ -306,12 +306,12 @@ public sealed class BandController
         }
         catch (UnauthorizedAccessException)
         {
-            error = "Écriture refusée : l'application n'est pas élevée.";
+            error = Strings.WriteDenied;
             return false;
         }
         catch (Exception ex)
         {
-            error = $"Écriture impossible : {ex.Message}";
+            error = Strings.WriteFailed.FormatWith(ex.Message);
             return false;
         }
     }
@@ -321,7 +321,7 @@ public sealed class BandController
         if (!Status.Connected || string.IsNullOrEmpty(Status.ProfileName) || Snapshot.InterfaceGuid is not Guid guid)
             return false;
 
-        progress?.Report("Reconnexion au réseau…");
+        progress?.Report(Strings.ProgressReconnectNetwork);
         var ok = WlanApi.Reconnect(guid, Status.ProfileName);
         _settings.ApplyMode = "Soft";
         _settings.Save();
@@ -332,12 +332,12 @@ public sealed class BandController
     {
         if (string.IsNullOrWhiteSpace(Snapshot.InterfaceAlias))
         {
-            Logger.Write("Redémarrage impossible : alias d'interface inconnu");
+            Logger.Write(Strings.LogRestartImpossible);
             return false;
         }
 
         var alias = Snapshot.InterfaceAlias!;
-        Logger.Write($"Redémarrage de « {alias} »");
+        Logger.Write(Strings.LogRestarting.FormatWith(alias));
 
         var disabled = Interop.RunHidden(
             "netsh", $"interface set interface name=\"{alias}\" admin=disabled", 20000);
@@ -351,7 +351,7 @@ public sealed class BandController
 
         if (disabled != 0 || enabled != 0)
         {
-            Logger.Write($"netsh a retourné {disabled}/{enabled} pour « {alias} »");
+            Logger.Write(Strings.LogNetshReturned.FormatWith(disabled, enabled, alias));
             return false;
         }
 
@@ -380,5 +380,5 @@ public sealed class BandController
     }
 
     private static string DescribeBand(Band? band) =>
-        band is Band b ? BandInfo.Describe(b) : "une bande inconnue";
+        band is Band b ? BandInfo.Describe(b) : Strings.BandUnknown;
 }

@@ -1,5 +1,5 @@
-﻿; WiFiBandSelector — installateur NSIS 3 (Unicode, français)
-; Construit par build.ps1 : dotnet publish puis makensis installer\setup.nsi
+﻿; WiFiBandSelector - NSIS 3 installer (Unicode; French assistant UI)
+; Built by build.ps1: dotnet publish, then makensis installer\setup.nsi
 
 Unicode true
 
@@ -48,7 +48,7 @@ Var retryCount
 Var taskXmlPath
 
 ; ---------------------------------------------------------------------------
-; Paramètres : /RUNTIME=<chemin> permet d'installer depuis un fichier local.
+; Parameters: /RUNTIME=<path> installs the runtime from a local file.
 ; ---------------------------------------------------------------------------
 Function .onInit
   ${GetParameters} $0
@@ -57,7 +57,7 @@ Function .onInit
 FunctionEnd
 
 ; ---------------------------------------------------------------------------
-; .NET 8 Desktop Runtime : déjà présent, fichier fourni, ou téléchargement.
+; .NET 8 Desktop Runtime: already present, supplied file, or download.
 ; ---------------------------------------------------------------------------
 Function EnsureRuntime
   ClearErrors
@@ -79,7 +79,7 @@ Function EnsureRuntime
     Return
   ${EndIf}
 
-  ; Téléchargement avec WinINet (plugin inetc), avec deux reprises.
+  ; Download with WinINet (inetc plugin), with two retries.
   InitPluginsDir
   StrCpy $retryCount 0
 DownloadLoop:
@@ -125,9 +125,9 @@ Function InstallRuntime
 FunctionEnd
 
 ; ---------------------------------------------------------------------------
-; Écriture directe du XML en UTF-16 avec BOM, ligne par ligne. Ne pas concaténer
-; le document dans une variable NSIS : elle plafonne à 1024 caractères et le
-; fichier serait tronqué (erreur « code XML mal formé » de schtasks).
+; Write the XML directly in UTF-16 with BOM, line by line. Do not concatenate
+; the document into an NSIS variable: it is limited to 1024 characters and the
+; file would be truncated (schtasks then reports "malformed XML").
 ; ---------------------------------------------------------------------------
 Function WriteTaskXml
   InitPluginsDir
@@ -140,7 +140,7 @@ Function WriteTaskXml
   FileWriteUTF16LE $3 '<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">$\r$\n'
   FileWriteUTF16LE $3 '  <RegistrationInfo>$\r$\n'
   FileWriteUTF16LE $3 '    <Author>${APP_PUBLISHER}</Author>$\r$\n'
-  FileWriteUTF16LE $3 '    <Description>WiFiBandSelector - demarrage avec la session de chaque utilisateur</Description>$\r$\n'
+  FileWriteUTF16LE $3 '    <Description>WiFiBandSelector - starts with each user session</Description>$\r$\n'
   FileWriteUTF16LE $3 '  </RegistrationInfo>$\r$\n'
   FileWriteUTF16LE $3 '  <Triggers>$\r$\n'
   FileWriteUTF16LE $3 '    <LogonTrigger>$\r$\n'
@@ -198,7 +198,7 @@ Section "Installation de ${APP_NAME}" SecMain
   CreateDirectory "$INSTDIR"
   SetOutPath "$INSTDIR"
 
-  ; Une version precedente peut etre en cours : son exe est verrouille.
+  ; A previous version may still be running: its exe would be locked.
   DetailPrint "Fermeture de l'instance en cours..."
   nsExec::ExecToStack 'taskkill /IM ${APP_EXE} /F'
   Pop $0
@@ -232,7 +232,7 @@ Section "Installation de ${APP_NAME}" SecMain
 SectionEnd
 
 ; ---------------------------------------------------------------------------
-; Désinstallation
+; Uninstallation
 ; ---------------------------------------------------------------------------
 Section "Uninstall"
   SetRegView 64

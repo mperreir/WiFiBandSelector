@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using System.Xml.Linq;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
-/// <summary>État de la tâche planifiée « WiFiBandSelector » (démarrage avec Windows).</summary>
+/// <summary>State of the "WiFiBandSelector" scheduled task (start with Windows).</summary>
 public static class ScheduledTask
 {
     public const string TaskName = "WiFiBandSelector";
@@ -12,7 +12,7 @@ public static class ScheduledTask
     private static DateTime _lastCheck = DateTime.MinValue;
     private static bool? _lastState;
 
-    /// <summary>Vrai si la tâche existe et est activée ; null si elle est absente ou illisible.</summary>
+    /// <summary>True if the task exists and is enabled; null if missing or unreadable.</summary>
     public static bool? IsEnabled()
     {
         lock (Gate)
@@ -42,13 +42,13 @@ public static class ScheduledTask
             var ns = root.GetDefaultNamespace();
             var enabled = root.Element(ns + "Settings")?.Element(ns + "Enabled")?.Value;
             if (enabled is null)
-                return true; // <Enabled> absent signifie activée par défaut.
+                return true; // A missing <Enabled> element means enabled by default.
 
             return string.Equals(enabled.Trim(), "true", StringComparison.OrdinalIgnoreCase);
         }
         catch (Exception ex)
         {
-            Logger.Write($"Lecture de la tâche planifiée impossible : {ex.Message}");
+            Logger.Write(Strings.LogTaskReadFailed.FormatWith(ex.Message));
             return null;
         }
     }
@@ -69,7 +69,7 @@ public static class ScheduledTask
         return code == 0;
     }
 
-    /// <summary>Vérifie que l'exécutable installé correspond à celui qui tourne.</summary>
+    /// <summary>Checks that the installed executable matches the one currently running.</summary>
     public static bool Exists() => Query() is not null;
 
     internal static string InstalledPath => Path.Combine(

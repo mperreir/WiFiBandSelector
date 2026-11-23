@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Construit l'installateur WiFiBandSelector (publish .NET 8 + NSIS).
+    Builds the WiFiBandSelector installer (.NET 8 publish + NSIS).
 .EXAMPLE
     .\build.ps1
-    .\build.ps1 -SkipTests -Version 0.1.0
+    .\build.ps1 -SkipTests -Version 0.2.0
 #>
 [CmdletBinding()]
 param(
@@ -18,14 +18,14 @@ Push-Location $root
 function Save-Download {
     param([string]$Url, [string]$Path, [string]$ExpectedHash)
 
-    Write-Host "Téléchargement : $Url"
+    Write-Host "Downloading: $Url"
     Invoke-WebRequest -Uri $Url -OutFile $Path -UseBasicParsing
 
     if ($ExpectedHash) {
         $actual = (Get-FileHash -Path $Path -Algorithm SHA256).Hash.ToLowerInvariant()
         if ($actual -ne $ExpectedHash) {
             Remove-Item -Path $Path -Force
-            throw "Empreinte SHA-256 inattendue pour $Path ($actual)"
+            throw "Unexpected SHA-256 hash for $Path ($actual)"
         }
     }
 }
@@ -35,20 +35,20 @@ try {
         $project = Get-Content -Path 'src\WiFiBandSelector\WiFiBandSelector.csproj' -Raw
         $Version = [regex]::Match($project, '<Version>([^<]+)</Version>').Groups[1].Value
     }
-    if (-not $Version) { throw 'Version introuvable dans le projet.' }
-    Write-Host "Version : $Version"
+    if (-not $Version) { throw 'Version not found in the project file.' }
+    Write-Host "Version: $Version"
 
     if (-not $SkipTests) {
-        Write-Host 'Tests…'
+        Write-Host 'Tests...'
         dotnet test 'tests\WiFiBandSelector.Tests\WiFiBandSelector.Tests.csproj' --nologo -v q
-        if ($LASTEXITCODE -ne 0) { throw 'Les tests ont échoué.' }
+        if ($LASTEXITCODE -ne 0) { throw 'Tests failed.' }
     }
 
-    Write-Host 'Publication…'
+    Write-Host 'Publishing...'
     dotnet publish 'src\WiFiBandSelector\WiFiBandSelector.csproj' -c Release -r win-x64 --self-contained false -o 'publish' --nologo -v q
-    if ($LASTEXITCODE -ne 0) { throw 'La publication a échoué.' }
+    if ($LASTEXITCODE -ne 0) { throw 'Publish failed.' }
     if (-not (Test-Path 'publish\WiFiBandSelector.exe')) {
-        throw 'publish\WiFiBandSelector.exe est absent.'
+        throw 'publish\WiFiBandSelector.exe is missing.'
     }
 
     $nsisRoot = 'tools\nsis\nsis-3.11'
@@ -56,7 +56,7 @@ try {
     $inetc = Join-Path $nsisRoot 'Plugins\x86-unicode\INetC.dll'
 
     if (-not (Test-Path $makensis)) {
-        Write-Host 'NSIS portable absent : téléchargement…'
+        Write-Host 'Portable NSIS is missing: downloading...'
         $zip = Join-Path $env:TEMP 'WiFiBandSelector-nsis-3.11.zip'
         Save-Download -Url 'https://github.com/tauri-apps/binary-releases/releases/download/nsis-3.11/nsis-3.11.zip' `
             -Path $zip -ExpectedHash 'c7d27f780ddb6cffb4730138cd1591e841f4b7edb155856901cdf5f214394fa1'
@@ -65,7 +65,7 @@ try {
     }
 
     if (-not (Test-Path $inetc)) {
-        Write-Host 'Plugin inetc absent : téléchargement…'
+        Write-Host 'inetc plugin is missing: downloading...'
         $zip = Join-Path $env:TEMP 'WiFiBandSelector-inetc.zip'
         $extract = Join-Path $env:TEMP 'WiFiBandSelector-inetc'
         Save-Download -Url 'https://nsis.sourceforge.io/mediawiki/images/c/c9/Inetc.zip' `
@@ -76,13 +76,13 @@ try {
     }
 
     if (-not (Test-Path 'dist')) { New-Item -ItemType Directory -Path 'dist' -Force | Out-Null }
-    Write-Host "Génération de l'installateur..."
+    Write-Host 'Building installer...'
     & $makensis "/DAPP_VERSION=$Version" 'installer\setup.nsi'
-    if ($LASTEXITCODE -ne 0) { throw "makensis a échoué (code $LASTEXITCODE)." }
+    if ($LASTEXITCODE -ne 0) { throw "makensis failed (code $LASTEXITCODE)." }
 
     $setup = "dist\WiFiBandSelector-Setup-$Version.exe"
-    if (-not (Test-Path $setup)) { throw "$setup n'a pas été produit." }
-    Write-Host "Terminé : $setup"
+    if (-not (Test-Path $setup)) { throw "$setup was not produced." }
+    Write-Host "Done: $setup"
 }
 finally {
     Pop-Location

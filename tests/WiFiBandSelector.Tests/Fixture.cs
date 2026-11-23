@@ -4,7 +4,7 @@ using WiFiBandSelector;
 
 namespace WiFiBandSelector.Tests;
 
-/// <summary>Charge un relevé de registre sérialisé, sans toucher au registre de la machine.</summary>
+/// <summary>Loads a serialized registry snapshot without touching the machine's registry.</summary>
 internal static class Fixture
 {
     public static DriverSnapshot Load(string name)

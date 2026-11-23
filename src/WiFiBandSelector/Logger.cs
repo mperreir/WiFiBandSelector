@@ -16,7 +16,7 @@ public static class AppPaths
     public static void Ensure() => Directory.CreateDirectory(DataDir);
 }
 
-/// <summary>Journal texte, avec rotation simple ; n'échoue jamais.</summary>
+/// <summary>Text log with simple rotation; never fails.</summary>
 public static class Logger
 {
     private const long MaxBytes = 200 * 1024;
@@ -41,7 +41,7 @@ public static class Logger
                     }
                     catch
                     {
-                        // La rotation est un confort : un échec ne doit pas empêcher d'écrire.
+                        // Rotation is a convenience: a failure must not prevent writing.
                     }
                 }
 
@@ -52,7 +52,7 @@ public static class Logger
         }
         catch
         {
-            // Aucun chemin d'erreur : le journal ne doit jamais faire tomber l'application.
+            // No error path: logging must never bring down the application.
         }
     }
 

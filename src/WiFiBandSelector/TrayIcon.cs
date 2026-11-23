@@ -4,7 +4,7 @@ using System.Drawing.Text;
 
 namespace WiFiBandSelector;
 
-/// <summary>Icône de la zone de notification, dessinée à la volée selon la bande et le verrou.</summary>
+/// <summary>Notification-area icon, drawn on the fly from the band and lock state.</summary>
 internal static class TrayIcon
 {
     private static readonly Color AutoColor = Color.FromArgb(84, 110, 122);

@@ -1,9 +1,10 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using WiFiBandSelector.Resources;
 
 namespace WiFiBandSelector;
 
-/// <summary>État radio réel de l'interface, tel que le pilote et Windows le voient.</summary>
+/// <summary>Actual radio state of the interface, as seen by the driver and Windows.</summary>
 public sealed record WlanStatus(
     bool Connected,
     string? Ssid,
@@ -16,12 +17,12 @@ public sealed record WlanStatus(
 }
 
 /// <summary>
-/// Accès minimal à wlanapi.dll : état de la connexion, fréquence réelle du point d'accès,
-/// analyse des réseaux visibles, reconnexion. Aucune sortie localisée n'est analysée.
+/// Minimal access to wlanapi.dll: connection state, actual access-point frequency,
+/// scan of visible networks, reconnection. No localized output is parsed.
 /// </summary>
 public static class WlanApi
 {
-    private const uint ClientVersion = 2; // Windows Vista et suivants
+    private const uint ClientVersion = 2; // Windows Vista and later
     private const int ErrorSuccess = 0;
     private const int MaxProfileNameChars = 256;
 
@@ -105,9 +106,9 @@ public static class WlanApi
     }
 
     /// <summary>
-    /// Définition réelle de WLAN_BSS_ENTRY (16 champs, 360 octets).
-    /// Attention : de vieux extraits de documentation décrivent une structure avec
-    /// ulChmFrequency / bSecurityEnabled ; elle ne correspond plus à wlanapi.dll.
+    /// Actual WLAN_BSS_ENTRY definition (16 fields, 360 bytes).
+    /// Note: old documentation snippets describe a structure with
+    /// ulChmFrequency / bSecurityEnabled; it no longer matches wlanapi.dll.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     private struct WlanBssEntry
@@ -151,7 +152,7 @@ public static class WlanApi
         public uint Flags;
     }
 
-    /// <summary>Ordre réel de la API : version négociée AVANT le handle.</summary>
+    /// <summary>Actual API order: version is negotiated BEFORE the handle.</summary>
     [DllImport("wlanapi.dll")]
     private static extern int WlanOpenHandle(
         uint clientVersion, IntPtr reserved, out uint negotiatedVersion, out IntPtr handle);
@@ -196,7 +197,7 @@ public static class WlanApi
         IntPtr reserved,
         out IntPtr bssList);
 
-    /// <summary>État de la connexion et bande réellement utilisée.</summary>
+    /// <summary>Connection state and band actually in use.</summary>
     public static WlanStatus QueryStatus(Guid interfaceGuid)
     {
         var attributes = TryGetConnectionAttributes(interfaceGuid);
@@ -221,7 +222,7 @@ public static class WlanApi
             Band: band);
     }
 
-    /// <summary>Bandes visibles dans le cache des réseaux analysés.</summary>
+    /// <summary>Bands visible in the scanned-network cache.</summary>
     public static HashSet<Band> ScanBands(Guid interfaceGuid, int waitMs)
     {
         var handle = IntPtr.Zero;
@@ -253,7 +254,7 @@ public static class WlanApi
         return bands;
     }
 
-    /// <summary>Déconnexion puis reconnexion au profil courant. Faux si impossible.</summary>
+    /// <summary>Disconnects then reconnects to the current profile. False if impossible.</summary>
     public static bool Reconnect(Guid interfaceGuid, string profileName)
     {
         var handle = IntPtr.Zero;
@@ -278,7 +279,7 @@ public static class WlanApi
 
             var rc = WlanConnect(handle, ref guid, ref parameters, IntPtr.Zero);
             if (rc != ErrorSuccess)
-                Logger.Write($"WlanConnect a échoué pour « {profileName} » (code {rc})");
+                Logger.Write(Strings.LogWlanConnectFailed.FormatWith(profileName, rc));
 
             return rc == ErrorSuccess;
         }
@@ -313,7 +314,7 @@ public static class WlanApi
         }
         catch (Exception ex)
         {
-            Logger.Write($"Lecture de la connexion impossible : {ex.Message}");
+            Logger.Write(Strings.LogConnectionReadFailed.FormatWith(ex.Message));
             return null;
         }
         finally
@@ -356,7 +357,7 @@ public static class WlanApi
             if (rc != ErrorSuccess || list == IntPtr.Zero)
             {
                 if (rc != ErrorSuccess)
-                    Logger.Write($"WlanGetNetworkBssList a échoué (code {rc})");
+                    Logger.Write(Strings.LogBssListFailed.FormatWith(rc));
                 return result;
             }
 
@@ -369,7 +370,7 @@ public static class WlanApi
                 var entryPtr = IntPtr.Add(list, 8 + i * stride);
                 var entry = Marshal.PtrToStructure<WlanBssEntry>(entryPtr);
 
-                // ulChCenterFrequency est en kHz (ex. 5 180 000 pour le canal 36).
+                // ulChCenterFrequency is in kHz (e.g. 5,180,000 for channel 36).
                 var mhz = entry.CenterFrequencyKhz / 1000;
                 if (mhz is < 2000 or > 7125)
                     continue;
@@ -380,7 +381,7 @@ public static class WlanApi
         }
         catch (Exception ex)
         {
-            Logger.Write($"Analyse des points d'accès impossible : {ex.Message}");
+            Logger.Write(Strings.LogScanFailed.FormatWith(ex.Message));
         }
         finally
         {
@@ -418,7 +419,7 @@ public static class WlanApi
         }
     }
 
-    /// <summary>Dernier recours quand la liste des points d'accès est indisponible.</summary>
+    /// <summary>Last resort when the access-point list is unavailable.</summary>
     private static Band? BandFromChannel(int channel) => channel switch
     {
         < 0 => null,
@@ -433,7 +434,7 @@ public static class WlanApi
         if (rc == ErrorSuccess)
             return true;
 
-        Logger.Write($"WlanOpenHandle a échoué (code {rc})");
+        Logger.Write(Strings.LogWlanOpenFailed.FormatWith(rc));
         handle = IntPtr.Zero;
         return false;
     }

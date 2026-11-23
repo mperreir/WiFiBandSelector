@@ -18,13 +18,31 @@
     <PublishTrimmed>false</PublishTrimmed>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <SatelliteResourceLanguages>en;fr</SatelliteResourceLanguages>
-    <Version>0.1.0</Version>
-    <FileVersion>0.1.0.0</FileVersion>
-    <InformationalVersion>0.1.0</InformationalVersion>
+    <Version>0.2.0</Version>
+    <FileVersion>0.2.0.0</FileVersion>
+    <InformationalVersion>0.2.0</InformationalVersion>
     <Company>Matthieu Perreira Da Silva</Company>
     <Product>WiFiBandSelector</Product>
-    <Description>Réglage de la bande Wi-Fi depuis la zone de notification</Description>
-    <Copyright>MIT — 2026 Matthieu Perreira Da Silva</Copyright>
+    <Description>Switch Wi-Fi bands from the notification area</Description>
+    <Copyright>MIT - 2026 Matthieu Perreira Da Silva</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Neutral resources are English; Strings.fr.resx supplies French.
+         Strongly typed accessors are generated into obj at build time. -->
+    <EmbeddedResource Update="Resources\Strings.resx">
+      <StronglyTypedLanguage>C#</StronglyTypedLanguage>
+      <StronglyTypedNamespace>WiFiBandSelector.Resources</StronglyTypedNamespace>
+      <StronglyTypedClassName>Strings</StronglyTypedClassName>
+      <StronglyTypedFileName>$(IntermediateOutputPath)Strings.Designer.cs</StronglyTypedFileName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The generated resource class is internal: expose it to the test assembly. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>WiFiBandSelector.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
 </Project>
