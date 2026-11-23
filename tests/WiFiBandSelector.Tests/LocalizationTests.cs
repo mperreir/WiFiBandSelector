@@ -32,17 +32,17 @@ public sealed class LocalizationTests
     }
 
     [Theory]
-    [InlineData("fr-FR", "économie d'énergie", "Économie d'énergie", "Économie d'énergie :")]
-    [InlineData("en-US", "power saving", "Power saving", "Power saving:")]
-    [InlineData("de-DE", "power saving", "Power saving", "Power saving:")]
+    [InlineData("fr-FR", "économie d'énergie", "Économie d'énergie", "Économie d'énergie : {0}")]
+    [InlineData("en-US", "power saving", "Power saving", "Power saving: {0}")]
+    [InlineData("de-DE", "power saving", "Power saving", "Power saving: {0}")]
     public void Power_saving_labels_are_localized(
-        string culture, string familyName, string menuLabel, string reportPrefix)
+        string culture, string familyName, string menuLabel, string reportTemplate)
     {
         using var scope = new UiCultureScope(culture);
 
         Assert.Equal(familyName, SettingClassifier.FamilyName(SettingFamily.PowerSaving));
         Assert.Equal(menuLabel, Strings.MenuPowerSaving);
-        Assert.Contains(reportPrefix, Diagnostics.BuildReport(), StringComparison.Ordinal);
+        Assert.Equal(reportTemplate, Strings.ReportPowerSaving);
     }
 
     [Fact]
