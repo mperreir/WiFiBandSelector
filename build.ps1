@@ -76,7 +76,7 @@ try {
     }
 
     if (-not (Test-Path 'dist')) { New-Item -ItemType Directory -Path 'dist' -Force | Out-Null }
-    Write-Host 'Génération de l’installateur…'
+    Write-Host "Génération de l'installateur..."
     & $makensis "/DAPP_VERSION=$Version" 'installer\setup.nsi'
     if ($LASTEXITCODE -ne 0) { throw "makensis a échoué (code $LASTEXITCODE)." }
 
