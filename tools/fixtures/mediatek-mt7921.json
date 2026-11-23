@@ -45,6 +45,17 @@
       ]
     },
     {
+      "keyword": "LowPowerEnable",
+      "paramDesc": "Power Saving",
+      "default": "1",
+      "current": "1",
+      "isEnum": true,
+      "choices": [
+        { "code": "0", "label": "Désactivé(e)" },
+        { "code": "1", "label": "Auto" }
+      ]
+    },
+    {
       "keyword": "WfdGOOperatingChannel",
       "paramDesc": "Miracast prefer band",
       "default": "0",

@@ -5,7 +5,7 @@ Unicode true
 
 !define APP_NAME "WiFiBandSelector"
 !ifndef APP_VERSION
-!define APP_VERSION "0.1.0"
+!define APP_VERSION "0.3.0"
 !endif
 !define APP_PUBLISHER "Matthieu Perreira Da Silva"
 !define APP_EXE "WiFiBandSelector.exe"

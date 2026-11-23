@@ -31,6 +31,20 @@ public sealed class LocalizationTests
         Assert.StartsWith(expectedPrefix, message, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("fr-FR", "économie d'énergie", "Économie d'énergie", "Économie d'énergie :")]
+    [InlineData("en-US", "power saving", "Power saving", "Power saving:")]
+    [InlineData("de-DE", "power saving", "Power saving", "Power saving:")]
+    public void Power_saving_labels_are_localized(
+        string culture, string familyName, string menuLabel, string reportPrefix)
+    {
+        using var scope = new UiCultureScope(culture);
+
+        Assert.Equal(familyName, SettingClassifier.FamilyName(SettingFamily.PowerSaving));
+        Assert.Equal(menuLabel, Strings.MenuPowerSaving);
+        Assert.Contains(reportPrefix, Diagnostics.BuildReport(), StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Classification_notes_are_localized()
     {

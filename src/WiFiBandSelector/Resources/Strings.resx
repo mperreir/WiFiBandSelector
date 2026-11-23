@@ -556,4 +556,22 @@ Log: {1}</value>
   <data name="NoteNoBandValue" xml:space="preserve">
     <value>{0}: no value names a band, the lock will be written without verification</value>
   </data>
+  <data name="FamilyNamePowerSaving" xml:space="preserve">
+    <value>power saving</value>
+  </data>
+  <data name="FamilyPowerSaving" xml:space="preserve">
+    <value>Power saving</value>
+  </data>
+  <data name="MenuPowerSaving" xml:space="preserve">
+    <value>Power saving</value>
+  </data>
+  <data name="LogPowerSaving" xml:space="preserve">
+    <value>Power saving {0} changed to {1} ({2}).</value>
+  </data>
+  <data name="PowerSavingApplied" xml:space="preserve">
+    <value>Power saving set to {0}.</value>
+  </data>
+  <data name="ReportPowerSaving" xml:space="preserve">
+    <value>Power saving: {0}</value>
+  </data>
 </root>

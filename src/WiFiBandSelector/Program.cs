@@ -86,6 +86,7 @@ internal static class Program
                 "preference" or "préférence" => SettingFamily.Preference,
                 "lock" or "verrou" => SettingFamily.Lock,
                 "roaming" or "itinérance" => SettingFamily.Roaming,
+                "powersaving" or "économie" or "economie" => SettingFamily.PowerSaving,
                 _ => throw new ArgumentException(Strings.CliUnknownFamily.FormatWith(familyArg)),
             };
 

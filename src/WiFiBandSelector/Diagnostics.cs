@@ -89,6 +89,7 @@ public static class Diagnostics
         sb.AppendLine(Strings.ReportPreference.FormatWith(Describe(caps.Preference)));
         sb.AppendLine(Strings.ReportLock.FormatWith(Describe(caps.Lock)));
         sb.AppendLine(Strings.ReportRoaming.FormatWith(Describe(caps.Roaming)));
+        sb.AppendLine(Strings.ReportPowerSaving.FormatWith(Describe(caps.PowerSaving)));
         sb.AppendLine();
 
         sb.AppendLine(Strings.ReportEnumParams);

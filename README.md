@@ -19,14 +19,14 @@ messages, logs and diagnostic reports.
 
 ## Installation (for students)
 
-1. Download `WiFiBandSelector-Setup-0.2.0.exe` from the
+1. Download `WiFiBandSelector-Setup-0.3.0.exe` from the
    [Releases](https://github.com/mperreir/WiFiBandSelector/releases) page.
 2. If Windows shows "Windows protected your PC", click **More info** and then **Run anyway**
    (the executable is not code-signed).
 3. Run the file, answer **Yes** to the UAC prompt and then **Finish**.
 4. The .NET 8 Desktop Runtime is downloaded and installed automatically if needed (an Internet
    connection is required). Otherwise use
-   `WiFiBandSelector-Setup-0.2.0.exe /RUNTIME=C:\path\to\windowsdesktop-runtime-win-x64.exe`.
+   `WiFiBandSelector-Setup-0.3.0.exe /RUNTIME=C:\path\to\windowsdesktop-runtime-win-x64.exe`.
 5. A Wi-Fi icon appears near the clock; the application starts at every logon, for all accounts.
 
 ## Usage
@@ -37,12 +37,17 @@ Click the icon (left or right click) to open the menu:
 - **Preferred band**: soft preference, both bands remain allowed;
 - **Lock a band**: strict setting, offered only when the driver exposes it;
 - **Roaming**: aggressiveness, with a reset to the driver default;
+- **Power saving**: radio power saving, when the driver exposes it (e.g. `LowPowerEnable` on
+  MediaTek); a soft reconnect follows the change, and the driver default is offered as a reset;
 - **Reconnect now**, **Start with Windows**, **Undo last change**;
 - **Diagnostic...**, **Log...**, **About**, **Exit**.
 
 In French these entries are **Bande préférée**, **Verrouiller une bande**, **Itinérance**,
-**Reconnecter maintenant**, **Démarrage avec Windows**, **Annuler la dernière modification**,
-**Diagnostic…**, **Journal…**, **À propos** and **Quitter**.
+**Économie d'énergie**, **Reconnecter maintenant**, **Démarrage avec Windows**,
+**Annuler la dernière modification**, **Diagnostic…**, **Journal…**, **À propos** and **Quitter**.
+
+Wake-on-LAN and transmit power are deliberately not exposed: they are filtered out as unrelated to
+radio power saving. The menu only contains the settings the driver actually declares.
 
 After a lock, the application checks that the connection comes back within 30 seconds; otherwise
 it restores the previous value and shows a warning. It also refuses to lock a band that is absent
@@ -73,8 +78,8 @@ For a headless write (support only, requires elevation):
 & "C:\Program Files\WiFiBandSelector\WiFiBandSelector.exe" /set preference 1 "$env:TEMP\result.txt"
 ```
 
-The family is `preference`, `lock` or `roaming` (the v0.1 French aliases `préférence`, `verrou`
-and `itinérance` are still accepted); the code comes from the report. The result (`Applied`,
+The family is `preference`, `lock`, `roaming` or `powersaving` (the French aliases `préférence`,
+`verrou`, `itinérance` and `économie` are also accepted); the code comes from the report. The result (`Applied`,
 `Refused`, ...) is written to the file; exit code `0` means success, `1` means failure.
 
 ## Known limitations
@@ -113,8 +118,6 @@ missing, then runs `makensis`. Output: `dist\WiFiBandSelector-Setup-<version>.ex
   real INF.
 - `installer\setup.nsi`: writes the scheduled-task XML in UTF-16 with BOM using the real install
   path, line by line — an NSIS variable is limited to 1024 characters and would truncate it.
-- `C:\Users\nous\.opencode\plan\wifi-band-selector.md`: working plan (outside the repository).
-
 ## License
 
 MIT - 2026 Matthieu Perreira Da Silva.

@@ -14,6 +14,9 @@ public enum SettingFamily
 
     /// <summary>Roaming aggressiveness (handover threshold between access points).</summary>
     Roaming,
+
+    /// <summary>Radio power saving, when the driver exposes it as an enum.</summary>
+    PowerSaving,
 }
 
 /// <summary>Radio band, as inferred from a driver label.</summary>
@@ -140,6 +143,7 @@ public sealed class AdapterCapabilities
     public DriverSetting? Preference { get; init; }
     public DriverSetting? Lock { get; init; }
     public DriverSetting? Roaming { get; init; }
+    public DriverSetting? PowerSaving { get; init; }
 
     /// <summary>Ignored parameters and their reasons, for the diagnostic report.</summary>
     public IReadOnlyList<string> Notes { get; init; } = Array.Empty<string>();
@@ -151,6 +155,7 @@ public sealed class AdapterCapabilities
         SettingFamily.Preference => Preference,
         SettingFamily.Lock => Lock,
         SettingFamily.Roaming => Roaming,
+        SettingFamily.PowerSaving => PowerSaving,
         _ => null,
     };
 }
@@ -197,6 +202,8 @@ public static class SettingClassifier
         ["roamingpreferredbandtype"] = SettingFamily.Preference,
         ["roamingaggressiveness"] = SettingFamily.Roaming,
         ["roamindicateth"] = SettingFamily.Roaming,
+        ["lowpowerenable"] = SettingFamily.PowerSaving,
+        ["powersavingmode"] = SettingFamily.PowerSaving,
     };
 
     public static bool IsBlacklisted(string keyword)
@@ -215,6 +222,12 @@ public static class SettingClassifier
             return known;
 
         var k = keyword.ToLowerInvariant();
+
+        // Radio power saving is a safe, self-contained family. Wake-on-LAN and
+        // transmit power are deliberately still rejected by the blacklist.
+        if (k.Contains("lowpower") || k.Contains("powersave") ||
+            k.Contains("powersaving") || k.Contains("powermanagement"))
+            return SettingFamily.PowerSaving;
 
         // Order matters: RoamingPreferredBandType contains "roam" but controls the band.
         if (k.Contains("band") && (k.Contains("select") || k.Contains("lock")))
@@ -313,6 +326,7 @@ public static class SettingClassifier
             Preference = Best(SettingFamily.Preference),
             Lock = Best(SettingFamily.Lock),
             Roaming = Best(SettingFamily.Roaming),
+            PowerSaving = Best(SettingFamily.PowerSaving),
             Notes = notes,
         };
     }
@@ -322,6 +336,7 @@ public static class SettingClassifier
         SettingFamily.Preference => Strings.FamilyNamePreference,
         SettingFamily.Lock => Strings.FamilyNameLock,
         SettingFamily.Roaming => Strings.FamilyNameRoaming,
+        SettingFamily.PowerSaving => Strings.FamilyNamePowerSaving,
         _ => family.ToString(),
     };
 }

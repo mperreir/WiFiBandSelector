@@ -296,6 +296,33 @@ internal sealed class TrayContext : ApplicationContext
             _menu.Items.Add(roamingMenu);
         }
 
+        if (caps.PowerSaving is not null)
+        {
+            var powerMenu = new ToolStripMenuItem(Strings.MenuPowerSaving);
+            foreach (var choice in caps.PowerSaving.Choices)
+            {
+                var item = new ToolStripMenuItem(choice.DisplayLabel)
+                {
+                    Checked = string.Equals(choice.Code, caps.PowerSaving.CurrentCode, StringComparison.OrdinalIgnoreCase),
+                };
+                var code = choice.Code;
+                item.Click += async (_, _) => await ApplyAsync(SettingFamily.PowerSaving, code);
+                powerMenu.DropDownItems.Add(item);
+            }
+
+            var defaultChoice = caps.PowerSaving.FindDefault();
+            if (defaultChoice is not null)
+            {
+                powerMenu.DropDownItems.Add(new ToolStripSeparator());
+                var item = new ToolStripMenuItem(Strings.MenuDriverDefault.FormatWith(defaultChoice.DisplayLabel));
+                var code = defaultChoice.Code;
+                item.Click += async (_, _) => await ApplyAsync(SettingFamily.PowerSaving, code);
+                powerMenu.DropDownItems.Add(item);
+            }
+
+            _menu.Items.Add(powerMenu);
+        }
+
         _menu.Items.Add(new ToolStripSeparator());
 
         var reconnect = Add(Strings.MenuReconnectNow, (_, _) => ReconnectNow());

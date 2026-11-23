@@ -6,13 +6,13 @@ namespace WiFiBandSelector.Tests;
 public sealed class ClassificationTests
 {
     [Theory]
-    [InlineData("mediatek-mt7921", "PreferredBand", "BandSelection", "RoamIndicateTh")]
-    [InlineData("intel-ax211", "RoamingPreferredBandType", null, "RoamingAggressiveness")]
-    [InlineData("realtek-rtl8852be", "PreferredBand", null, "RoamingAggressiveness")]
-    [InlineData("exotic-band-mode", "RadioMode", null, null)]
-    [InlineData("no-band", null, null, "RoamingAggressiveness")]
+    [InlineData("mediatek-mt7921", "PreferredBand", "BandSelection", "RoamIndicateTh", "LowPowerEnable")]
+    [InlineData("intel-ax211", "RoamingPreferredBandType", null, "RoamingAggressiveness", null)]
+    [InlineData("realtek-rtl8852be", "PreferredBand", null, "RoamingAggressiveness", null)]
+    [InlineData("exotic-band-mode", "RadioMode", null, null, null)]
+    [InlineData("no-band", null, null, "RoamingAggressiveness", null)]
     public void Fixture_is_classified_as_expected(
-        string fixture, string? preference, string? lockKeyword, string? roaming)
+        string fixture, string? preference, string? lockKeyword, string? roaming, string? powerSaving)
     {
         var snapshot = Fixture.Load(fixture);
         var capabilities = SettingClassifier.Classify(snapshot.Params);
@@ -20,6 +20,7 @@ public sealed class ClassificationTests
         Assert.Equal(preference, capabilities.Preference?.Keyword);
         Assert.Equal(lockKeyword, capabilities.Lock?.Keyword);
         Assert.Equal(roaming, capabilities.Roaming?.Keyword);
+        Assert.Equal(powerSaving, capabilities.PowerSaving?.Keyword);
         Assert.Equal(preference is not null || lockKeyword is not null, capabilities.IsSupported);
     }
 
@@ -99,5 +100,43 @@ public sealed class ClassificationTests
         Assert.Contains(
             Strings.NoteIgnored.FormatWith("PreferredBand", "Bande privilégiée"),
             capabilities.Notes);
+    }
+
+    [Fact]
+    public void Power_saving_is_exposed_from_the_driver_enum()
+    {
+        var capabilities = SettingClassifier.Classify(Fixture.Load("mediatek-mt7921").Params);
+        var power = capabilities.PowerSaving!;
+
+        Assert.Equal(SettingFamily.PowerSaving, power.Family);
+        Assert.Equal("Power Saving", power.Title);
+        Assert.Equal(new[] { "0", "1" }, power.Choices.Select(c => c.Code).ToArray());
+        Assert.Equal("1", power.CurrentCode);
+        Assert.Equal("1", power.DefaultCode);
+        Assert.Equal("Auto", power.CurrentDisplay);
+        Assert.Equal("Auto", power.FindDefault()!.DisplayLabel);
+        Assert.All(power.Choices, choice => Assert.Null(choice.Band));
+    }
+
+    [Theory]
+    [InlineData("LowPowerEnable")]
+    [InlineData("PowerSaveMode")]
+    [InlineData("PowerSavingMode")]
+    [InlineData("WirelessPowerManagement")]
+    public void Power_saving_keywords_are_recognized(string keyword)
+    {
+        Assert.Equal(SettingFamily.PowerSaving, SettingClassifier.ClassifyKeyword(keyword));
+    }
+
+    [Theory]
+    [InlineData("DisableWakeOnMagic")]
+    [InlineData("DisableWakeOnPattern")]
+    [InlineData("WakeOnLan")]
+    [InlineData("TxPowerLevel")]
+    [InlineData("MaxTxPower")]
+    public void Wake_and_transmit_power_stay_excluded(string keyword)
+    {
+        Assert.True(SettingClassifier.IsBlacklisted(keyword));
+        Assert.Null(SettingClassifier.ClassifyKeyword(keyword));
     }
 }

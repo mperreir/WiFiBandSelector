@@ -32,6 +32,12 @@ public sealed record ApplyOutcome(ApplyStatus Status, string Message)
 /// </summary>
 public sealed class BandController
 {
+    private static readonly SettingFamily[] Families =
+    {
+        SettingFamily.Preference, SettingFamily.Lock,
+        SettingFamily.Roaming, SettingFamily.PowerSaving,
+    };
+
     private readonly AppSettings _settings;
 
     public BandController(DriverSnapshot snapshot, AdapterCapabilities capabilities, AppSettings settings)
@@ -55,6 +61,7 @@ public sealed class BandController
         SettingFamily.Preference => Strings.FamilyPreference,
         SettingFamily.Lock => Strings.FamilyLock,
         SettingFamily.Roaming => Strings.FamilyRoaming,
+        SettingFamily.PowerSaving => Strings.FamilyPowerSaving,
         _ => family.ToString(),
     };
 
@@ -68,7 +75,7 @@ public sealed class BandController
 
             if (key is not null)
             {
-                foreach (var family in new[] { SettingFamily.Preference, SettingFamily.Lock, SettingFamily.Roaming })
+                foreach (var family in Families)
                 {
                     var setting = Capabilities.For(family);
                     if (setting is null)
@@ -132,6 +139,17 @@ public sealed class BandController
             return new ApplyOutcome(
                 ApplyStatus.Applied,
                 Strings.RoamingApplied.FormatWith(choice.DisplayLabel));
+        }
+
+        if (family == SettingFamily.PowerSaving)
+        {
+            // The driver only picks up the new value after a reconnect; no band
+            // verification is possible here, so no automatic rollback either.
+            ApplySoftReconnect(progress);
+            Logger.Write(Strings.LogPowerSaving.FormatWith(setting.Keyword, code, choice.DisplayLabel));
+            return new ApplyOutcome(
+                ApplyStatus.Applied,
+                Strings.PowerSavingApplied.FormatWith(choice.DisplayLabel));
         }
 
         var desired = choice.Band;
@@ -248,7 +266,7 @@ public sealed class BandController
     {
         var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var family in new[] { SettingFamily.Preference, SettingFamily.Lock, SettingFamily.Roaming })
+        foreach (var family in Families)
         {
             var setting = Capabilities.For(family);
             if (setting is not null && setting.CurrentCode.Length > 0)

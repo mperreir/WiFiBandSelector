@@ -556,4 +556,22 @@ Journal : {1}</value>
   <data name="NoteNoBandValue" xml:space="preserve">
     <value>{0} : aucune valeur ne nomme une bande, le verrou sera écrit sans vérification</value>
   </data>
+  <data name="FamilyNamePowerSaving" xml:space="preserve">
+    <value>économie d'énergie</value>
+  </data>
+  <data name="FamilyPowerSaving" xml:space="preserve">
+    <value>Économie d'énergie</value>
+  </data>
+  <data name="MenuPowerSaving" xml:space="preserve">
+    <value>Économie d'énergie</value>
+  </data>
+  <data name="LogPowerSaving" xml:space="preserve">
+    <value>Économie d'énergie {0} changée pour {1} ({2}).</value>
+  </data>
+  <data name="PowerSavingApplied" xml:space="preserve">
+    <value>Économie d'énergie réglée sur {0}.</value>
+  </data>
+  <data name="ReportPowerSaving" xml:space="preserve">
+    <value>Économie d'énergie : {0}</value>
+  </data>
 </root>
