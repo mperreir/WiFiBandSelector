@@ -89,8 +89,9 @@ The family is `preference`, `lock`, `roaming` or `powersaving` (the French alias
 - **Intel AX211**: no usable lock (`Wireless Mode` would reduce throughput); only the preference
   is offered.
 - **Roaming**: without several access points on the same SSID, this setting has no effect.
-- RTL8852BE Wi-Fi instability is often caused by the driver or power saving; those settings are
-  deliberately out of scope.
+- RTL8852BE Wi-Fi instability is often caused by the driver or power saving. Driver updates are out
+  of scope, but radio power saving is now available in the **Power saving** menu when the driver
+  declares it (U-APSD and selective suspend are still not covered).
 - A driver update may reset values: the application re-reads the registry each time the menu opens.
 - A preference stays a preference: the driver may choose another band when the signal is weak.
 - The connection drops briefly when a change is applied (a few seconds in lock mode).
@@ -118,6 +119,7 @@ missing, then runs `makensis`. Output: `dist\WiFiBandSelector-Setup-<version>.ex
   real INF.
 - `installer\setup.nsi`: writes the scheduled-task XML in UTF-16 with BOM using the real install
   path, line by line — an NSIS variable is limited to 1024 characters and would truncate it.
+
 ## License
 
 MIT - 2026 Matthieu Perreira Da Silva.
