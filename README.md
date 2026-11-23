@@ -12,7 +12,7 @@ Wi-Fi, et n'envoie aucune donnée.
 ## Installation (pour les étudiants)
 
 1. Télécharger `WiFiBandSelector-Setup-0.1.0.exe` depuis la page
-   [Releases](https://github.com/MatthieuPerreiraDaSilva/WiFiBandSelector/releases).
+   [Releases](https://github.com/mperreir/WiFiBandSelector/releases).
 2. Si Windows affiche « Marque du web », cliquer sur **Informations complémentaires** puis
    **Exécuter quand même** (le programme n'est pas signé).
 3. Exécuter le fichier, répondre **Oui** à la demande UAC, puis **Terminer**.
@@ -55,6 +55,16 @@ Le rapport indique la carte, les familles reconnues, la bande associée, toutes 
 du pilote et les motifs de classement. Une carte sans mot-clé de bande est signalée
 « non prise en charge » : c'est un résultat normal, pas un bug.
 
+Pour un test d'écriture sans interface (réservé au support, nécessite les droits élevés) :
+
+```powershell
+& "C:\Program Files\WiFiBandSelector\WiFiBandSelector.exe" /set preference 1 "$env:TEMP\resultat.txt"
+```
+
+La famille est `preference`, `lock` ou `roaming` ; le code est celui indiqué par le rapport.
+Le résultat (`Applied`, `Refused`…) est écrit dans le fichier ; code de sortie `0` si l'application
+a réussi, `1` sinon.
+
 ## Limites connues
 
 - **Realtek RTL8852BE** : le nom exact des mots-clés reste à confirmer sur les ProBook ; le rapport
@@ -77,7 +87,7 @@ du pilote et les motifs de classement. Une carte sans mot-clé de bande est sign
 ## Développement
 
 ```powershell
-git clone https://github.com/MatthieuPerreiraDaSilva/WiFiBandSelector.git
+git clone https://github.com/mperreir/WiFiBandSelector.git
 cd WiFiBandSelector
 dotnet test tests\WiFiBandSelector.Tests\WiFiBandSelector.Tests.csproj
 .\build.ps1

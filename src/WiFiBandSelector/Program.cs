@@ -14,6 +14,14 @@ internal static class Program
             return;
         }
 
+        // Mode support discret : applique un réglage sans ouvrir le menu.
+        if (args.Length >= 3 && string.Equals(args[0], "/set", StringComparison.OrdinalIgnoreCase))
+        {
+            Environment.ExitCode = ApplyFromCommandLine(
+                args[1], args[2], args.Length >= 4 ? args[3] : null);
+            return;
+        }
+
         using var mutex = new Mutex(initiallyOwned: true, @"Local\WiFiBandSelector", out var isFirstInstance);
         if (!isFirstInstance)
             return;
@@ -63,6 +71,51 @@ internal static class Program
             }
 
             Environment.ExitCode = 1;
+        }
+    }
+
+    private static int ApplyFromCommandLine(string familyArg, string code, string? outputPath)
+    {
+        var text = string.Empty;
+        try
+        {
+            var family = familyArg.ToLowerInvariant() switch
+            {
+                "preference" or "préférence" => SettingFamily.Preference,
+                "lock" or "verrou" => SettingFamily.Lock,
+                "roaming" or "itinérance" => SettingFamily.Roaming,
+                _ => throw new ArgumentException($"Famille inconnue : {familyArg}"),
+            };
+
+            var settings = AppSettings.Load();
+            var adapters = AdapterDiscovery.Discover();
+            var snapshot = adapters.FirstOrDefault(s =>
+                                string.Equals(s.KeyPath, settings.AdapterKeyPath, StringComparison.OrdinalIgnoreCase))
+                            ?? adapters.FirstOrDefault()
+                            ?? throw new InvalidOperationException("Aucune carte Wi-Fi physique trouvée.");
+
+            var controller = new BandController(
+                snapshot, SettingClassifier.Classify(snapshot.Params), settings);
+            var outcome = controller.Apply(family, code);
+
+            text = $"{outcome.Status} : {outcome.Message}";
+            Logger.Write($"/set {familyArg} {code} → {text}");
+            if (!string.IsNullOrEmpty(outputPath))
+                File.WriteAllText(outputPath, text, new UTF8Encoding(false));
+            else
+                Console.WriteLine(text);
+
+            return outcome.Ok ? 0 : 1;
+        }
+        catch (Exception ex)
+        {
+            text = $"Erreur : {ex.Message}";
+            Logger.Write($"/set {familyArg} {code} → {text}");
+            if (!string.IsNullOrEmpty(outputPath))
+                File.WriteAllText(outputPath, text, new UTF8Encoding(false));
+            else
+                Console.WriteLine(text);
+            return 2;
         }
     }
 
