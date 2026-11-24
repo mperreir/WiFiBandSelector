@@ -19,15 +19,16 @@ messages, logs and diagnostic reports.
 
 ## Installation (for students)
 
-1. Download `WiFiBandSelector-Setup-0.3.0.exe` from the
+1. Download `WiFiBandSelector-Setup-0.3.1.exe` from the
    [Releases](https://github.com/mperreir/WiFiBandSelector/releases) page.
 2. If Windows shows "Windows protected your PC", click **More info** and then **Run anyway**
    (the executable is not code-signed).
 3. Run the file, answer **Yes** to the UAC prompt and then **Finish**.
 4. The .NET 8 Desktop Runtime is downloaded and installed automatically if needed (an Internet
    connection is required). Otherwise use
-   `WiFiBandSelector-Setup-0.3.0.exe /RUNTIME=C:\path\to\windowsdesktop-runtime-win-x64.exe`.
+   `WiFiBandSelector-Setup-0.3.1.exe /RUNTIME=C:\path\to\windowsdesktop-runtime-win-x64.exe`.
 5. A Wi-Fi icon appears near the clock; the application starts at every logon, for all accounts.
+   A **WiFiBandSelector** shortcut is also available in the Start menu.
 
 ## Usage
 

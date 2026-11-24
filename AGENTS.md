@@ -22,7 +22,7 @@ Target devices are HP ProBook 440 G9 laptops; developed on a MediaTek MT7921.
   snapshots; no live registry required.
 - `build.ps1` — tests, publish, portable NSIS 3.11 + `inetc` download, `makensis`.
 - `installer/setup.nsi` — downloads the .NET 8 Desktop Runtime, writes the per-machine scheduled
-  task, registers the uninstaller.
+  task, creates the Start Menu shortcut, registers the uninstaller.
 
 ## Commands
 

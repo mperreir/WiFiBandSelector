@@ -5,7 +5,7 @@ Unicode true
 
 !define APP_NAME "WiFiBandSelector"
 !ifndef APP_VERSION
-!define APP_VERSION "0.3.0"
+!define APP_VERSION "0.3.1"
 !endif
 !define APP_PUBLISHER "Matthieu Perreira Da Silva"
 !define APP_EXE "WiFiBandSelector.exe"
@@ -207,6 +207,10 @@ Section "Installation de ${APP_NAME}" SecMain
   File "..\publish\${APP_EXE}"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
+  ; Make the utility easy to find when its logon task is disabled.
+  CreateDirectory "$SMPROGRAMS\${APP_NAME}"
+  CreateShortcut "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
+
   WriteRegStr HKLM "${UNINSTALL_KEY}" "DisplayName" "${APP_NAME}"
   WriteRegStr HKLM "${UNINSTALL_KEY}" "DisplayVersion" "${APP_VERSION}"
   WriteRegStr HKLM "${UNINSTALL_KEY}" "Publisher" "${APP_PUBLISHER}"
@@ -241,6 +245,9 @@ Section "Uninstall"
   nsExec::ExecToStack 'schtasks /Delete /TN "${TASK_NAME}" /F'
   Pop $0
   Pop $1
+
+  Delete "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk"
+  RMDir "$SMPROGRAMS\${APP_NAME}"
 
   Delete "$INSTDIR\${APP_EXE}"
   Delete "$INSTDIR\Uninstall.exe"
